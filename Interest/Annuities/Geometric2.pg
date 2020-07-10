@@ -1,0 +1,100 @@
+## DESCRIPTION
+## Find the sum of a finite geometric series.
+## The answer is a decimal number, similar to the future value of an annuity.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'geometric series')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Interest')
+## DBsection('Annuities')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "contextFraction.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+##############################################################
+#
+#  Setup
+#
+#
+
+Context("Numeric");
+Context()->{format}{number} = "%.2f";
+
+$a = random(30, 50, 1);
+$r = random(1.01, 1.10, 0.01);
+$n = random(10, 15, 1);
+
+# The sum is a + ar + ar^2 + ... + ar^n
+
+$ans = $a*(1-$r**($n+1))/(1-$r);
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+
+BEGIN_TEXT
+
+Compute the following sum.  Express the answer as a decimal
+number to two decimal places.
+
+$PAR
+\[$a + $a($r) + $a($r)^2 + \dots + $a($r)^{$n} = \]
+$PAR
+\{ans_rule(a1, 20)\}
+$PAR
+
+END_TEXT
+
+Context()->normalStrings;
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($ans)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+This is an application of the formula for a finite geometric series
+\[
+a + ar + ar^2 + \dots + ar^n = \frac{a-ar^{n+1}}{1-r},
+\]
+assuming \(r \ne 1\).
+Here, \(a = $a\), \(r = $r\), and \(n = $n\).
+Therefore, the sum equals
+\[ \frac{$a - $a($r^{$n+1})}{1-$r} = $ans.\]
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

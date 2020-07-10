@@ -1,0 +1,104 @@
+## DESCRIPTION
+## Find the dollar markup and selling price given the cost and
+## markup percent based on cost.  The markup percent based on
+## cost will be under 100%.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'markup', 'dollar markup',)
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Percents')
+## DBsection('Markup')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+Context("Numeric");
+
+$c = Real(random(200, 1000, 10));
+$mpboc_PER = Real(random(5, 95, 5));
+$mpboc = $mpboc_PER / 100;
+$s = $c * (1 + $mpboc);
+$m = $s - $c;
+
+Context("Currency");
+
+$c = Currency($c);
+$s = Currency($s);
+$m = Currency($m);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose a store acquires an item from a distributor for
+\($c\).  The store then marks up the price by 
+\($mpboc_PER $PERCENT\) and offers it for sale to the public.
+
+$PAR
+a) Find the dollar markup.
+\{ANS_RULE(a1, 10)\}
+$PAR
+$HR 
+b) Find the selling price.
+\{ANS_RULE(b1, 10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answers are dollar amounts and should include dollar signs.)
+$PAR
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($m)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+ANS(Compute($s)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+The markup percent based on cost is given as \($mpboc_PER $PERCENT\ = $mpboc\).
+$PAR
+a) Therefore, the dollar markup is \($c \times $mpboc = $m\).
+$PAR
+b) The selling price is \($c + $m = $s\).
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

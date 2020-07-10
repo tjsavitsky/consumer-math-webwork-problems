@@ -1,0 +1,114 @@
+## DESCRIPTION
+## Find the dollar markup, markup percent based on cost, and
+## markup percent based on selling price given the cost and selling price.
+## The markup percent based on cost will be over 100%.
+## ENDDESCRIPTION
+
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'markup', 'dollar markup',)
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Percents')
+## DBsection('Markup')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+Context("Numeric");
+
+$c = Real(random(200, 1000, 10));
+$s = Real(random(2*$c,3*$c,10));
+$m = $s - $c;
+$mpboc = $m/$c;
+$mpboc_PER = $mpboc * 100;
+$mpbos = $m/$s;
+$mpbos_PER = $mpbos * 100;
+
+Context("Currency");
+
+$c = Currency($c);
+$s = Currency($s);
+$m = Currency($m);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose a store acquires an item from a distributor for
+\($c\) and prices it for sale at \($s\).
+
+$PAR
+a) Find the dollar markup.
+\{ANS_RULE(a1, 10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+$HR
+b) Find the markup percent based on cost.
+\{ANS_RULE(b1, 6)\}\(%\)
+$PAR
+$HR
+c) Find the markup percent based on selling price.
+\{ANS_RULE(c1, 6)\}\(%\)
+$PAR
+
+
+
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($m)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+ANS(Compute($mpboc_PER)->with(tolType => 'absolute', tolerance => .025,)->cmp);
+ANS(Compute($mpbos_PER)->with(tolType => 'absolute', tolerance => .025,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+a) The dollar markup is \($s - $c = $m\).
+$PAR
+b) The markup percent based on cost is \(\frac{$m}{$c} = $mpboc_PER $PERCENT\).
+$PAR
+c) The markup percent based on selling price is \(\frac{$m}{$s} = $mpbos_PER $PERCENT\).
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

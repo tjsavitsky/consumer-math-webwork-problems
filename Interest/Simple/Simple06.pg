@@ -1,0 +1,114 @@
+## DESCRIPTION
+## Compute ordinary and exact simple interest. The duration is more than 360 days.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'interest', 'simple interest', 'ordinary interest', 'exact interest')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Interest')
+## DBsection('Simple Interest')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+Context("Numeric");
+
+$P = random(1000,20000,500);
+$r_PER = random(1, 9, 1);
+$r = $r_PER / 100;
+$t_days = random(390, 720, 30);
+$t_ordinary = $t_days/360;
+$t_exact = $t_days/365;
+$I_ordinary = $P*$r*$t_ordinary;
+$I_exact = $P*$r*$t_exact;
+
+Context("Currency");
+
+$P = Currency($P);
+$I_ordinary = Currency($I_ordinary);
+$I_exact = Currency($I_exact);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose a \($P\) is loan is taken out at a \($r_PER $PERCENT\)
+annual interest rate.  Assume the interest is simple and not
+compounded.
+
+$PAR
+$HR
+a) Calculate the ordinary simple interest due after \($t_days\) days.
+$PAR
+\{ANS_RULE(a1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+$HR
+b) Calculate the exact simple interest due after \($t_days\) days.
+$PAR
+\{ANS_RULE(b1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+END_TEXT
+Context()->normalStrings;
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($I_ordinary)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+ANS(Compute($I_exact)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+This is an application of the simple interest formula
+\[
+I = Prt,
+\]
+$PAR
+where \(P = $P\), \(r = $r\), and \(t\) is different in each part.
+$PAR
+a) Use a 360-day year to compute ordinary interest.  Thus here, \(t = \frac{$t_days}{360}\).  So \(I = Prt = $P \times $r \times \frac{$t_days}{360} = $P \times $r \times $t_ordinary = $I_ordinary\).
+$PAR
+b) Use a 365-day year to compute exact interest.  Thus here, \(t = \frac{$t_days}{365}\).  So \(I = Prt = $P \times $r \times \frac{$t_days}{365} = $P \times $r \times $t_exact = $I_exact\).
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

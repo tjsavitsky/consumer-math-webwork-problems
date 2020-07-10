@@ -1,0 +1,127 @@
+## DESCRIPTION
+## Find the monthly amortization payment.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'interest', 'amortization',)
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Interest')
+## DBsection('Amortization')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+Context("Numeric");
+
+$pva = random(100000, 500000, 50000);
+$t = random(10, 30, 5);
+$n = $t*12;
+$interest_rate_PER = random(3, 24, 3);
+$interest_rate = $interest_rate_PER / 100;
+$i = $interest_rate/12;
+$i_PER = $i*100;
+
+$pmt = $pva*$i/(1-(1+$i)**(-1*$n));
+
+Context("Currency");
+
+$pmt = Currency($pmt);
+$pva = Currency($pva);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose a \($pva\) mortgage is amortized over a period of
+\($t\) years at a \($interest_rate_PER $PERCENT\)
+annual interest rate.  Payments will be made every month.
+
+$PAR
+$HR
+a) Find the number of monthly payments that will be made.
+$PAR
+\{ANS_RULE(a1, 4)\}
+$PAR
+$HR
+b) Calculate the monthly interest rate.  Give the answer to three decimal places.
+$PAR
+\{ANS_RULE(a1, 10)\}\(\%\)
+$PAR
+$HR
+c) Calculate the monthly payment.
+$PAR
+\{ANS_RULE(b1, 10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($n)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+ANS(Compute($i_PER)->with(tolType => 'absolute', tolerance => .0015,)->cmp);
+ANS(Compute($pmt)->with(tolType => 'absolute', tolerance => .035)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+a) The number of monthly payments equals \(12 \times $t = $n\).
+$PAR
+b) The monthly interest rate equals \(\frac{$interest_rate}{12}
+= $i = $i_PER $PERCENT\).
+$PAR
+c) This is an application of the present value of an annuity formula
+\[
+PVA = PMT \, \frac{1-(1+i)^{-n}}{i},
+\]
+$PAR
+where \(PVA = $pva, \text{ }i = \frac{$interest_rate}{12}, \text{ and } n = $n\). Solving for \(PMT\) gives
+\[
+PMT = \frac{PVA \times i}{1-(1+i)^{-n}}.
+\]
+Plugging everything in, we get
+\[
+PMT = $pmt.
+\]
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

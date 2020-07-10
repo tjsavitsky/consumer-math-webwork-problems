@@ -1,0 +1,98 @@
+## DESCRIPTION
+## Practice decimal arithmetic without a calculator.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'decimals')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Arithmetic')
+## DBsection('Fractions')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl",
+  "contextArbitraryString.pl",
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+
+Context("Numeric");
+
+$n = random(2,9,1);
+$parta = $n / 100;
+$partb = $n / 10;
+$partc = $n * 10;
+$partd = $n * 100;
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Calculate the following quantities $BITALIC without $EITALIC the
+use of a calculator.
+$PAR
+a) \($n \div 100\)
+$PAR
+\{ANS_RULE(a1,10)\}
+$PAR
+$HR
+$PAR
+b) \($n \div 10\)
+$PAR
+\{ANS_RULE(a2,10)\}
+$PAR
+$HR
+$PAR
+END_TEXT
+Context()->normalStrings;
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($parta)->with(tolType => 'absolute', tolerance => .01,)->cmp);
+ANS(Compute($partb)->with(tolType => 'absolute', tolerance => .01,)->cmp);
+#ANS(Compute($partc)->with(tolType => 'absolute', tolerance => .01,)->cmp);
+#ANS(Compute($partd)->with(tolType => 'absolute', tolerance => .01,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+a) \($n \div 100 = $parta\)
+$PAR
+b) \($n \div 10 = $partb\)
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

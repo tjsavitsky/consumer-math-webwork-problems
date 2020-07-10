@@ -1,0 +1,88 @@
+## DESCRIPTION
+## Practice plugging in an expression into a calculator.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'calculator')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Arithmetic')
+## DBsection('Fractions')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl",
+  "contextArbitraryString.pl",
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+
+Context("Numeric");
+
+$awhole = random(6,10,1);
+$adec = random(0.01,0.99,0.01);
+$a = $awhole + $adec;
+$bwhole = random(4,12,1);
+$bdec = random(0.01,0.99,0.01);
+$b = $bwhole + $bdec;
+$cwhole = random(10,20,2);
+$cdec = random(0.1,0.9,0.1);
+$c = $cwhole + $cdec;
+$answer = $a/($b+$c);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Use a calculator to compute the following quantity to two decimal places.
+\[\frac{$a}{$b + $c}\]
+$PAR
+\{ANS_RULE(a1,10)\}
+$PAR
+END_TEXT
+Context()->normalStrings;
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($answer)->with(tolType => 'absolute', tolerance => .01,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+The answer is \($answer\).
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

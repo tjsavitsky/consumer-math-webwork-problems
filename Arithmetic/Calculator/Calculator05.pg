@@ -1,0 +1,83 @@
+## DESCRIPTION
+## Practice plugging in an expression into a calculator.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'calculator')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Arithmetic')
+## DBsection('Fractions')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl",
+  "contextArbitraryString.pl",
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+
+Context("Numeric");
+
+$anum = random(3,15,2);
+$aden = $anum+3;
+$b = random(3,8,1);
+$c = random(3,9,1);
+$answer = ($anum/$aden + $b)/($c);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Use a calculator to compute the following quantity to two decimal places.
+\[\frac{\frac{$anum}{$aden} + $b}{$c}\]
+$PAR
+\{ANS_RULE(a1,10)\}
+$PAR
+END_TEXT
+Context()->normalStrings;
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($answer)->with(tolType => 'absolute', tolerance => .01,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+The answer is \($answer\).
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

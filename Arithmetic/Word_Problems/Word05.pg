@@ -1,0 +1,99 @@
+## DESCRIPTION
+## A simple word problem involving a system of two linear equations.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'word problem')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Arithmetic')
+## DBsection('Word Problems')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl",
+  "contextArbitraryString.pl",
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+
+Context("Numeric");
+
+$oranges = random(2, 6, 1);
+$multiple = random(2, 6, 1);
+$cherries = $oranges * $multiple;
+$total_pieces = $oranges + $cherries;
+$multiple_p1 = $multiple + 1;
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose a fruit basket has two kinds of fruit: cherries and oranges.
+The basket has \($multiple\) times as many cherries as oranges,
+and it has a total of \($total_pieces\) pieces of fruit.
+$PAR
+a) How many oranges are in the basket?
+$PAR
+\{ANS_RULE(a1,6)\} oranges
+$PAR
+b) How many cherries are in the basket?
+$PAR
+\{ANS_RULE(a1,6)\} cherries
+$PAR
+END_TEXT
+Context()->normalStrings;
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($oranges)->with(tolType => 'absolute', tolerance => .01,)->cmp);
+ANS(Compute($cherries)->with(tolType => 'absolute', tolerance => .01,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+Let \(x\) denote the number of oranges in the basket, and
+let \(y\) denote the number of cherries.  We are given
+\[x + y = $total_pieces \quad \text{and} \quad y = {$multiple}x.\]
+Substituting the second equation into the first gives
+\({$multiple_p1}x = $total_pieces\).  Thus
+\(x = \frac{$total_pieces}{$multiple_p1} = $oranges\),
+and \(y = $multiple \times $oranges = $cherries\).
+Therefore, the basket has \($oranges\) oranges and
+\($cherries\) cherries.
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

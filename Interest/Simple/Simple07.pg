@@ -1,0 +1,149 @@
+## DESCRIPTION
+## Compute the future value of a loan, assuming simple interest.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'interest', 'future value', 'simple interest')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Interest')
+## DBsection('Simple Interest')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+Context("Numeric");
+
+$P = random(1000,20000,500);
+$r_PER = random(1, 9, 1);
+$r = $r_PER / 100;
+$t_a = 1/4;
+$t_b = 1/2;
+$t_c = 1;
+$t_d = random(2,8,1);
+$I_a = $P*$r*$t_a;
+$I_b = $P*$r*$t_b;
+$I_c = $P*$r*$t_c;
+$I_d = $P*$r*$t_d;
+$FV_a = $P + $I_a;
+$FV_b = $P + $I_b;
+$FV_c = $P + $I_c;
+$FV_d = $P + $I_d;
+
+Context("Currency");
+
+$P = Currency($P);
+$I_a = Currency($I_a);
+$I_b = Currency($I_b);
+$I_c = Currency($I_c);
+$I_d = Currency($I_d);
+$FV_a = Currency($FV_a);
+$FV_b = Currency($FV_b);
+$FV_c = Currency($FV_c);
+$FV_d = Currency($FV_d);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose a \($P\) is loan is taken out at a \($r_PER $PERCENT\)
+annual interest rate.  Assume the interest is simple and not
+compounded.
+
+$PAR
+$HR
+a) Calculate the amount due (principal plus interest) after \(\frac{1}{4}\) a year.
+$PAR
+\{ANS_RULE(a1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+$HR
+b) Calculate the amount due (principal plus interest) after \(\frac{1}{2}\) a year.
+$PAR
+\{ANS_RULE(b1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+$HR
+c) Calculate the amount due (principal plus interest) after one year.
+$PAR
+\{ANS_RULE(c1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+$HR
+d) Calculate the amount due (principal plus interest) after \($t_d\) years.
+$PAR
+\{ANS_RULE(d1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+
+END_TEXT
+Context()->normalStrings;
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($FV_a)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+ANS(Compute($FV_b)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+ANS(Compute($FV_c)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+ANS(Compute($FV_d)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+We are asked for the future value, or \(FV\).  Recall that
+\(FV = P + I\).  To compute \(I\), we use
+the simple interest formula \(I = Prt\).
+Thus \(FV = P + Prt\).
+$PAR
+In this problem, \(P = $P\), \(r = $r\), and \(t\) is different in each part.
+
+$PAR
+a) Here, \(t = $t_a\).  So \(FV = P+Prt = $P + $P \times $r \times $t_a = $FV_a\).
+$PAR
+b) Here, \(t = $t_b\).  So \(FV = P+Prt = $P + $P \times $r \times $t_b = $FV_b\).
+$PAR
+c) Here, \(t = $t_c\).  So \(FV = P+Prt = $P + $P \times $r \times $t_c = $FV_c\).
+$PAR
+d) Here, \(t = $t_d\).  So \(FV = P+Prt = $P + $P \times $r \times $t_d = $FV_d\).
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

@@ -1,0 +1,85 @@
+## DESCRIPTION
+## Compute the time given the rate and distance.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'word problem', 'rate')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Arithmetic')
+## DBsection('Word Problems')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl",
+  "contextArbitraryString.pl",
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+
+Context("Numeric");
+
+$wpm = random(30, 80, 5);
+$minutes = random(300, 500, 1);
+$words = $wpm * $minutes;
+@names = ("Carl", "Dave", "Tom", "Josh");
+$name = $names[random(0, $#names, 1)];
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose $name types at the rate of \($wpm\) words per minute.
+How long will it take $name to type his dissertation of
+\($words\) words?
+$PAR
+\{ANS_RULE(a1,6)\} minutes
+$PAR
+END_TEXT
+Context()->normalStrings;
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($minutes)->with(tolType => 'absolute', tolerance => .01,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+It will take $name \(\frac{$words}{$wpm} = $minutes\)
+minutes to type the disseration.
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

@@ -1,0 +1,117 @@
+## DESCRIPTION
+## Convert from a percent to a decimal number.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'percent')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Percents')
+## DBsection('Word Problems')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl",
+  "contextArbitraryString.pl",
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+
+Context("Numeric");
+
+$rateA_PER = random(10, 99, 1);
+$rateB_PER = random(1, 9, 1);
+$rateC_PER = random(100, 500, 10);
+$rateD_PER = random(0.1, 0.9, 0.1);
+$rateE_PER = random(0.01, 0.09, 0.01);
+
+$rateA = $rateA_PER / 100;
+$rateB = $rateB_PER / 100;
+$rateC = $rateC_PER / 100;
+$rateD = $rateD_PER / 100;
+$rateE = $rateE_PER / 100;
+
+Context("Currency");
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Convert the following percents to decimal numbers.  Give all
+answers to four decimal places.
+$PAR
+a) \($rateA_PER $PERCENT\) 
+\{ANS_RULE(a1,8)\}
+$PAR
+b) \($rateB_PER $PERCENT\)
+\{ANS_RULE(b1,8)\}
+$PAR
+c) \($rateC_PER $PERCENT\)
+\{ANS_RULE(c1,8)\}
+$PAR
+d) \($rateD_PER $PERCENT\)
+\{ANS_RULE(d1,8)\}
+$PAR
+e) \($rateE_PER $PERCENT\)
+\{ANS_RULE(e1,8)\}
+$PAR
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($rateA)->with(tolType => 'absolute', tolerance => .00009,)->cmp);
+ANS(Compute($rateB)->with(tolType => 'absolute', tolerance => .00009,)->cmp);
+ANS(Compute($rateC)->with(tolType => 'absolute', tolerance => .00009,)->cmp);
+ANS(Compute($rateD)->with(tolType => 'absolute', tolerance => .00009,)->cmp);
+ANS(Compute($rateE)->with(tolType => 'absolute', tolerance => .00009,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+a) \($rateA_PER $PERCENT = $rateA\)
+$PAR
+b) \($rateB_PER $PERCENT = $rateB\)
+$PAR
+c) \($rateC_PER $PERCENT = $rateC\)
+$PAR
+d) \($rateD_PER $PERCENT = $rateD\)
+$PAR
+e) \($rateE_PER $PERCENT = $rateE\)
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

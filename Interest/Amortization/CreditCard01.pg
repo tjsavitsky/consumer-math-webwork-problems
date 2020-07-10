@@ -1,0 +1,94 @@
+## DESCRIPTION
+## Find the interest payment on a monthly credit card balance.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'interest', 'amortization',)
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Interest')
+## DBsection('Amortization')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+Context("Numeric");
+
+$debt = random(1000, 3000, 5);
+$annual_PER = random(10, 24, 0.1);
+$annual = $annual_PER / 100;
+$interest = $debt*$annual/12;
+
+Context("Currency");
+
+$debt = Currency($debt);
+$interest = Currency($interest);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Find the interest that accrues at the end of the month
+on a credit card with a balance of \($debt\) at an
+annual interest rate of \($annual_PER \%\).
+$PAR
+\{ANS_RULE(a1, 5)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($interest)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+This is an application of the simple interest formula \(I=Prt\),
+where we use a monthly interest rate and measure time in months.
+Here, \(P = $debt\), \(r = \frac{$annual}{12}\), and \(t=1\).
+$PAR
+We calculate \(I=$debt \times \frac{$annual}{12} = $interest\).
+So interest of \($interest\) accrues at the end of the month.
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

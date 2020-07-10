@@ -1,0 +1,140 @@
+## DESCRIPTION
+## Find the commission based on a three-tiered scheme.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'commission')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Percents')
+## DBsection('Discounts')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl",
+  "contextArbitraryString.pl",
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+
+Context("Numeric");
+
+$commission_rate1_PER = Real(random(1,2,1));
+$commission_rate1 = $commission_rate1_PER / 100;
+$commission_rate2_PER = Real(random(1,2,1)) + $commission_rate1_PER;
+$commission_rate2 = $commission_rate2_PER / 100;
+$commission_rate3_PER = Real(random(1,2,1)) + $commission_rate2_PER;
+$commission_rate3 = $commission_rate3_PER / 100;
+$tier1 = Real(random(50000, 100000, 10000));
+$tier2 = $tier1 + Real(random(100000, 200000, 10000));
+$sales1 = Real(random(10000, $tier1, 10000));
+$sales2 = Real(random($tier1+10000, $tier2, 10000));
+$sales3 = $tier2 + Real(random(10000, 200000, 10000));
+
+$commission1 = $sales1 * $commission_rate1;
+$commission2 = $tier1 * $commission_rate1 + $commission_rate2*($sales2-$tier1);
+$commission3 = $tier1 * $commission_rate1 + ($tier2-$tier1)*$commission_rate2 + $commission_rate3*($sales3-$tier2);
+
+Context("Currency");
+
+$tier1 = Currency($tier1);
+$tier2 = Currency($tier2);
+$sales1 = Currency($sales1);
+$sales2 = Currency($sales2);
+$sales3 = Currency($sales3);
+$commission1 = Currency($commission1);
+$commission2 = Currency($commission2);
+$commission3 = Currency($commission3);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose a salesperson receives a commission of 
+\($commission_rate1_PER $PERCENT\) on monthly sales
+of up to \($tier1\), a commission of \($commission_rate2_PER $PERCENT\)
+on monthly sales between \($tier1\) and \($tier2\), and
+a commission of \($commission_rate3_PER $PERCENT\)
+on monthly sales in excess of \($tier2\).
+$PAR
+a) Calculate the salesperson's commission on monthly sales of
+\($sales1\).
+$PAR
+\{ANS_RULE(a1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+$HR
+b) Calculate the salesperson's commission on monthly sales of
+\($sales2\).
+$PAR
+\{ANS_RULE(b1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+$HR
+c) Calculate the salesperson's commission on monthly sales of
+\($sales3\).
+$PAR
+\{ANS_RULE(b1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($commission1)->with(tolType => 'absolute', tolerance=>.02)->cmp);
+ANS(Compute($commission2)->with(tolType => 'absolute', tolerance=>.02)->cmp);
+ANS(Compute($commission3)->with(tolType => 'absolute', tolerance=>.02)->cmp);
+
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+a) The commission is \($commission_rate1 \times $sales1\ = $commission1\).
+$PAR
+b) The commission is \($commission_rate1 \times $tier1 +
+$commission_rate2 \times ($sales2 - $tier1) = $commission2\).
+$PAR
+c) The commission is \($commission_rate1 \times $tier1 +
+$commission_rate2 \times ($tier2-$tier1) + 
+$commission_rate3 \times ($sales3 - $tier2) = $commission3\).
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

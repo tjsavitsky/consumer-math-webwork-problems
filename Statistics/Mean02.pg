@@ -1,0 +1,108 @@
+## DESCRIPTION
+## Calculate the mean and median of a data set with an even number of
+## entries.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'mean', 'median')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Stocks_and_Bonds')
+## DBsection('Bonds')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+
+Context("Numeric");
+
+$n = random(6,10,2);
+@dataset = ();
+$sum = 0;
+for (my $i = 0; $i < $n; $i++) {
+    $a = random(1,50,1);
+    $sum += $a;
+    push(@dataset, $a);
+}
+$data_str = join(", ", @dataset);
+@sorted = PGsort(sub {$_[0] < $_[1]}, @dataset);
+$sorted_str = join(", ", @sorted);
+
+$mean = $sum / $n;
+$median_index = ($n-1)/2;
+$median = ($sorted[$median_index] + $sorted[$median_index+1])/2;
+
+Context("Numeric");
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Consider the following data set.
+\[$data_str\]
+$PAR
+a) Calculate its mean.
+$PAR
+\{ANS_RULE(a1,6)\}
+$HR
+$PAR
+b) Calculate its median.
+$PAR
+\{ANS_RULE(b1,6)\}
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($mean)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+ANS(Compute($median)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+a) The mean is the sum of all numbers in the data set
+divided by the number of elements in the data set.
+So the mean is \(\frac{$sum}{$n} = $mean\).
+$HR
+b) Sorting the data set from least to greatest gives:
+\[$sorted_str\]
+The median is now the average of the two values in the
+the middle positions, namely \($median\).
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

@@ -1,0 +1,153 @@
+## DESCRIPTION
+## Fill in a four-month amortization table.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'interest', 'discount', 'promissory')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Percents')
+## DBsection('Discounts')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl",
+  "contextArbitraryString.pl",
+  "niceTables.pl",
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+
+Context("Numeric");
+
+$pva = random(50000, 200000, 25000);
+$zero = 0;
+$interest_rate_PER = random(6, 24, 6);
+$interest_rate = $interest_rate_PER / 100;
+$i = $interest_rate / 12;
+$n = 4;
+
+$monthly_payment = $pva*$i/(1-(1+$i)**(-1*$n));
+
+@ub = ();
+@ip = ();
+@pp = ();
+@nb = ();
+$nb[0] = $pva;
+
+for ($j=1; $j<=$n; $j++) {
+    $ub[$j] = $nb[$j-1];
+    $ip[$j] = $ub[$j]*$i;
+    $pp[$j] = $monthly_payment - $ip[$j];
+    $nb[$j] = $ub[$j] - $pp[$j];
+}
+
+Context("Currency");
+
+$pva = Currency($pva);
+$zero = Currency($zero);
+$monthly_payment = Currency($monthly_payment);
+
+for ($j=1; $j<=$n; $j++) {
+    $ub[$j] = Currency($ub[$j]);
+    $ip[$j] = Currency($ip[$j]);
+    $pp[$j] = Currency($pp[$j]);
+    $nb[$j] = Currency($nb[$j]);
+}
+
+$a1 = "\($pva\)";
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose a \($pva\) loan is amortized over a period of
+\($n\) months at a \($interest_rate_PER $PERCENT\)
+annual interest rate.  One can compute that the monthly payment is
+\($monthly_payment\).  Fill in the remaining entries
+in the amortization table below.  (Due to rounding
+errors, the final balance may be slightly different than \($zero\).)
+
+$PAR
+$BCENTER
+\{
+DataTable(
+  [
+    [['Month', headerrow => 1],'Unpaid Balance', 'Interest Payment', 'Principal Payment', 'Total Payment', 'New Balance'],
+    ['\(1\)', '\($ub[1]\)', '\($ip[1]\)', '\($pp[1]\)', '\($monthly_payment\)', '\($nb[1]\)'],
+    ['\(2\)', ans_rule(10), ans_rule(10), ans_rule(10), '\($monthly_payment\)', ans_rule(10)],
+    ['\(3\)', ans_rule(10), ans_rule(10), ans_rule(10), '\($monthly_payment\)', ans_rule(10)],
+    ['\(4\)', ans_rule(10), ans_rule(10), ans_rule(10), '\($monthly_payment\)', ans_rule(10)],
+  ], 
+);
+\}
+$ECENTER
+$PAR
+(${BBOLD}Note: $EBOLD The answers are dollar amounts and should include dollar signs.)
+
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+for ($j=2; $j<=$n; $j++) {
+    ANS(Compute($ub[$j])->with(tolType => 'absolute', tolerance => 1.55,)->cmp);
+    ANS(Compute($ip[$j])->with(tolType => 'absolute', tolerance => 1.55,)->cmp);
+    ANS(Compute($pp[$j])->with(tolType => 'absolute', tolerance => 1.55,)->cmp);
+    ANS(Compute($nb[$j])->with(tolType => 'absolute', tolerance => 1.55,)->cmp);
+}
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+$PAR
+$BCENTER
+\{
+DataTable(
+  [
+    [['Month', headerrow => 1],'Unpaid Balance', 'Interest Payment', 'Principal Payment', 'Total Payment', 'New Balance'],
+    ['\(1\)', '\($ub[1]\)', '\($ip[1]\)', '\($pp[1]\)', '\($monthly_payment\)', '\($nb[1]\)'],
+    ['\(2\)', '\($ub[2]\)', '\($ip[2]\)', '\($pp[2]\)', '\($monthly_payment\)', '\($nb[2]\)'],
+    ['\(3\)', '\($ub[3]\)', '\($ip[3]\)', '\($pp[3]\)', '\($monthly_payment\)', '\($nb[3]\)'],
+    ['\(4\)', '\($ub[4]\)', '\($ip[4]\)', '\($pp[4]\)', '\($monthly_payment\)', '\($nb[4]\)'],
+  ],
+);
+\}
+$ECENTER
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

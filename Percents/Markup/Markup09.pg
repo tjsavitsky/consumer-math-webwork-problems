@@ -1,0 +1,107 @@
+## DESCRIPTION
+## Find the selling price given the cost and the markup percent
+## based on selling price.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'markup', 'dollar markup',)
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Percents')
+## DBsection('Markup')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+Context("Numeric");
+
+$c = Real(random(200, 2000, 10));
+$mpbos_PER = Real(random(10, 75, 5));
+$mpbos = $mpbos_PER / 100;
+$one_minus_mpbos = 1 - $mpbos;
+$s = $c / (1 - $mpbos);
+$m = $s - $c;
+
+Context("Currency");
+
+$c = Currency($c);
+$s = Currency($s);
+$m = Currency($m);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose an item has a cost of \($c\).
+Assuming the markup percent based on selling price (${BITALIC}not $EITALIC cost)
+is \($mpbos_PER $PERCENT\), what is the selling price?
+
+$PAR
+\{ANS_RULE(a1, 10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+
+
+
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($s)->with(tolType => 'absolute', tolerance => .025,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+Let \(M\) denote the dollar markup,
+\(C\) the cost, and 
+\(S\) the selling price.
+Recall that \(S = C + M\) and that
+the markup percent based on selling price is \(\frac{M}{S}\).
+$PAR
+So \(\frac{M}{S} = $mpbos\), and thus \(M = $mpbos S\).
+Since \(S = M+C\), we have \(S = $mpbos S + C\), and
+thus \(S - $mpbos S = C\).  Solving for \(S\) gives
+\($one_minus_mpbos S = C\), or \(S = \frac{C}{$one_minus_mpbos}
+= \frac{$c}{$one_minus_mpbos} = $s\).
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

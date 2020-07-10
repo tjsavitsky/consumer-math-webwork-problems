@@ -1,0 +1,151 @@
+## DESCRIPTION
+## Find the discount period, cash discount, and remittance.  The invoice
+## date is the current date.  The invoice includes a freight charge.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'discount', 'invoice', 'remittance')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Percents')
+## DBsection('Discounts')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl",
+  "contextArbitraryString.pl",
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+
+Context("Numeric");
+
+$net_purchase = random(1000, 9000, 10);
+$freight = random(50, 250, 25);
+$invoice = $net_purchase + $freight;
+
+$discount_rate_PER = Real(random(2, 5, 1));
+$discount_rate = $discount_rate_PER / 100;
+$discount_days = random(5, 15, 5);
+
+$discount_amt = $net_purchase * $discount_rate;
+$remittance = $invoice - $discount_amt;
+$due_days = random(30, 60, 15);
+
+$invoice_time = time(); #in seconds since Unix epoch
+($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime($invoice_time);
+$invoice_day = $mday;
+$invoice_month = $mon+1;
+$invoice_year = $year+1900;
+
+$discount_time = $invoice_time + $discount_days * 60 * 60 * 24;
+($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime($discount_time);
+$discount_day = $mday;
+$discount_month = $mon+1;
+$discount_year = $year+1900;
+
+$due_time = $invoice_time + $due_days * 60 * 60 * 24;
+($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime($due_time);
+$due_day = $mday;
+$due_month = $mon+1;
+$due_year = $year+1900;
+
+
+Context("Currency");
+
+$invoice = Currency($invoice);
+$freight = Currency($freight);
+$net_purchase = Currency($net_purchase);
+$discount_amt = Currency($discount_amt);
+$remittance = Currency($remittance);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose a buyer receives a \($invoice\) invoice dated today,
+\($invoice_month/$invoice_day/$invoice_year\),
+with the terms \(${discount_rate_PER}/${discount_days}, n/${due_days}\).
+The invoice includes a freight charge of \($freight\)
+that is not eligible for a discount, but it contains no
+other such charges.
+
+$PAR
+a) Find the net purchase amount.
+$PAR
+\{ANS_RULE(a1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+$HR
+b) Find the discount amount, assuming the buyer pays in
+full with the discount period.
+$PAR
+\{ANS_RULE(b1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+$HR
+c) Calculate the remittance if the buyer pays in full within
+the discount period.
+$PAR
+\{ANS_RULE(c1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($net_purchase)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+ANS(Compute($discount_amt)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+ANS(Compute($remittance)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+a) The net purchase amount is \($invoice - $freight = $net_purchase\).
+$PAR
+b) The discount amount is \($discount_rate_PER $PERCENT\) of
+\($net_purchase\), which is \($discount_amt\).
+$PAR
+c) The remittance would be
+\($invoice - $discount_amt = $remittance\).
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

@@ -1,0 +1,115 @@
+## DESCRIPTION
+## Find the periodic payment required to pay off a loan.
+## Interest is compounded monthly.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'interest', 'future value', 'annuity')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Interest')
+## DBsection('Annuities')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+Context("Numeric");
+
+$i_PER = random(0.5,2,0.5);
+$i = $i_PER / 100;
+$n = random(6, 24, 2);
+$price = random(1000, 5000, 100);
+$down = random(100, $price/2, 50);
+$pva = $price-$down;
+$pmt = ($pva*$i)/(1-(1+$i)**(-$n));
+
+Context("Currency");
+
+$price = Currency($price);
+$down = Currency($down);
+$pmt = Currency($pmt);
+$pva = Currency($pva);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose your friend purchases a workstation priced at \($price\).
+Your friend makes a down payment of \($down\) and agrees to
+pay off the remaining balance in \($n\) equal monthly installments.
+Your friend will also pay interest each month on the unpaid
+balance at the $BITALIC monthly $EITALIC rate of \($i_PER $PERCENT\).
+$PAR
+The first monthly payment will be made one month after
+the purchase.  How much will the monthly payment be?
+$PAR
+\{ANS_RULE(10)\}
+$PAR
+
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($pmt)->with(tolType => 'absolute', tolerance => .035,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+This is an application of the present value of an annuity formula
+\[
+PVA = PMT \, \frac{1-(1+i)^{-n}}{i},
+\]
+$PAR
+where \(PVA = $price-$down=$pva, \text{ }i = $i, \text{ and } n = $n\).
+Solving for \(PMT\) gives
+\[
+PMT = \frac{PVA \times i}{1-(1+i)^{-n}}.
+\]
+Plugging everything in, we see that
+$PAR
+\[
+PMT = \frac{$pva \times $i}{1-(1+$i)^{-$n}} = $pmt.
+\]
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

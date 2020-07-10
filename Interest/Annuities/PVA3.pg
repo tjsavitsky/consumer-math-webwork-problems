@@ -1,0 +1,109 @@
+## DESCRIPTION
+## Find the periodic withdrawal required to deplete a fund
+## with a specified initial balance and interest rate.
+## Interest is compounded annually.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'interest', 'annuity')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Interest')
+## DBsection('Annuities')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+Context("Numeric");
+
+$r_PER = random(3, 9, 0.01);
+$r = $r_PER / 100;
+$i_PER = $r_PER / 1;
+$i = $i_PER / 100;
+$pmt = random(4000, 12000, 1000);
+$t = random(5, 12, 1);
+$n = $t;
+$pva = $pmt * (1-(1+$i)**(-$n))/$i;
+
+Context("Currency");
+
+$pmt = Currency($pmt);
+$pva = Currency($pva);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+How much would you have to deposit today into an account
+that earns interest at the annual rate of \($r_PER $PERCENT\),
+compounded annually, in order to be able to withdraw \($pmt\)
+every year for the next \($t\) years?
+Your first withdrawal will be made one year from now, and
+after your last withdrawal, the account should be empty.
+$PAR
+\{ANS_RULE(10)\}
+$PAR
+
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($pva)->with(tolType => 'absolute', tolerance => .035,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+This is an application of the present value of an annuity formula
+\[
+PVA = PMT \, \frac{1-(1+i)^{-n}}{i},
+\]
+$PAR
+where \(PMT = $pmt\), \(i=$i\), and \(n=$t\).
+Plugging everything in, we see that
+$PAR
+\[
+PVA = $pmt \times \frac{1-(1+$i)^{-$n}}{$i} = $pva.
+\]
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

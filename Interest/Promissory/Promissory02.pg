@@ -1,0 +1,171 @@
+## DESCRIPTION
+## Find the discount amount and equivalent annual interest rate of
+## a non-interest-bearing promissory note.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'interest', 'discount', 'promissory')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Percents')
+## DBsection('Discounts')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl",
+  "contextArbitraryString.pl",
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+
+Context("Numeric");
+
+$principal = random(50000, 300000, 10000);
+$discount_rate_PER = random(5, 15, 1);
+$one_minus_discount_rate_PER = 100-$discount_rate_PER;
+$discount_rate = $discount_rate_PER / 100;
+$interest_rate = 0;
+$discount_days = random(30, 360, 30);
+$interest_days = $discount_days;
+$days_in_year = random(360, 365, 5);
+$maturity = $principal + $principal * $interest_rate * $interest_days / $days_in_year;
+$discount_amt = $maturity * $discount_rate * $discount_days / $days_in_year;
+$proceeds = $maturity - $discount_amt;
+
+$note_time = time(); #in seconds since Unix epoch
+$note_time = $note_time - random(365, 700)*60*60*24; #roughly one or two years ago
+($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime($note_time);
+$note_day = $mday;
+$note_month = $mon+1;
+$note_year = $year+1900;
+
+$maturity_time = $note_time + $interest_days * 60 * 60 * 24;
+($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime($maturity_time);
+$maturity_day = $mday;
+$maturity_month = $mon+1;
+$maturity_year = $year+1900;
+
+$discount_time = $maturity_time - $discount_days * 60 * 60 * 24;
+($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime($discount_time);
+$discount_day = $mday;
+$discount_month = $mon+1;
+$discount_year = $year+1900;
+
+$equiv_rate = ($discount_amt)/($proceeds * $discount_days/$days_in_year);
+$equiv_rate_PER = $equiv_rate * 100;
+
+Context("Currency");
+
+$principal = Currency($principal);
+$discount_amt = Currency($discount_amt);
+$maturity = Currency($maturity);
+$proceeds = Currency($proceeds);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose an entrepreneur goes to a lender to borrow money for
+a new business.  The entrepreneur signs a \($discount_days\)-day 
+non-interest-bearing promissory note with a face value of
+\($maturity\) at a \($discount_rate_PER $PERCENT\)
+discount rate.  (So the entreprenuer borrows
+less than \($maturity\) but agrees to pay back \($maturity\) after \($discount_days\) days.)
+$PAR
+$HR
+a) Find the maturity value.
+$PAR
+\{ANS_RULE(a1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+$HR
+b) Find the discount amount.  Use a \($days_in_year\)-day year.
+$PAR
+\{ANS_RULE(b1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+$HR
+c) Find the proceeds.
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+\{ANS_RULE(c1,10)\} 
+$PAR
+$HR
+d) Compute the equivalent annual interest rate using
+a \($days_in_year\)-day year.  (Hints: Essentially,
+the entreprenuer borrowed the proceeds and agreed to pay back
+\($maturity\) after \($interest_days\) days.  So you can use
+the \(I=Prt\) formula with \(I\) equal to the discount amount and
+\(P\) equal to the proceeds to find \(r\), the 
+equivalent annual interest rate.)
+$PAR
+\{ANS_RULE(d1,6)\}\($PERCENT\)
+$PAR
+END_TEXT
+Context()->normalStrings;
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($maturity)->with(tolType => 'absolute', tolerance => 0.015,)->cmp);
+ANS(Compute($discount_amt)->with(tolType => 'absolute', tolerance => 0.015,)->cmp);
+ANS(Compute($proceeds)->with(tolType => 'absolute', tolerance => 0.015,)->cmp);
+ANS(Compute($equiv_rate_PER)->with(tolType => 'absolute', tolerance => 0.015,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+a) Since the note is non-interest-bearing, the maturity value is
+the face value: \($maturity\).
+$PAR
+b) The discount amount is \($maturity \times $discount_rate \times
+\frac{$discount_days}{$days_in_year} = $discount_amt\).
+$PAR
+c) The proceeds equal the maturity value minus the discount amount.
+So the proceeds are \($maturity - $discount_amt = $proceeds\).
+$PAR
+d) Solving for \(r\) in \(I=Prt\) gives \(r = \frac{I}{Pt}\).
+Here, \(I = $discount_amt\), the discount amount;
+\(P=$proceeds\), the proceeds; and \(t = \frac{$discount_days}{$days_in_year}\).
+Plugging everything in gives \[r = \frac{$discount_amt}{$proceeds
+\times \frac{$discount_days}{$days_in_year}} = $equiv_rate = $equiv_rate_PER
+$PERCENT.\]
+Therefore, the equivalent annual interest rate is \($equiv_rate_PER $PERCENT\).
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

@@ -1,0 +1,88 @@
+## DESCRIPTION
+## Enter a present value of an annuity question into a calculator.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'interest', 'annuity')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Interest')
+## DBsection('Annuities')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+Context("Numeric");
+
+$r_PER = random(3, 9, 0.25);
+$r = $r_PER / 100;
+$m = 12;
+$i_PER = $r_PER / $m;
+$i = $i_PER / 100;
+$pmt = random(100, 2500, 50);
+$t = random(3, 7, 1);
+$n = $t * $m;
+$pva = $pmt * (1-(1+$i)**(-$n))/$i;
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Calculate \[
+$pmt \times \frac{1-(1+\frac{$r}{$m})^{-$n}}{\frac{$r}{$m}}
+\]
+to at least two decimal places.
+$PAR
+\{ANS_RULE(10)\}
+$PAR
+
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($pva)->with(tolType => 'absolute', tolerance => .035,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+The answer is \($pva\).
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

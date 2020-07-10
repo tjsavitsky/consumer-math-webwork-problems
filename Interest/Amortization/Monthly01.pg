@@ -1,0 +1,80 @@
+## DESCRIPTION
+## Convert an annual interest rate to a monthly rate.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'interest', 'amortization',)
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Interest')
+## DBsection('Amortization')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+Context("Numeric");
+
+$annual = random(1, 8, 0.01);
+$monthly = $annual/12;
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Convert \($annual \%\) per year to an equivalent monthly rate.
+Give the answer to four decimal places.
+$PAR
+\{ANS_RULE(a1, 6)\}\(\%\) per month
+
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($monthly)->with(tolType => 'absolute', tolerance => .00015,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+We calculate \(\frac{$annual}{12} = $monthly\). So
+the equivalent rate is \($monthly \%\) per month.
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

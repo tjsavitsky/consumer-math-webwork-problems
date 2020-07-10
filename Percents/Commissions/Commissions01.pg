@@ -1,0 +1,101 @@
+## DESCRIPTION
+## Find the total pay given base salary, commimssion rate, and sales.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'commission')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Percents')
+## DBsection('Discounts')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl",
+  "contextArbitraryString.pl",
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+
+Context("Numeric");
+
+$base_pay = Real(random(1000, 3000, 100));
+$commission_rate1_PER = Real(random(1,5,1));
+$commission_rate1 = $commission_rate1_PER / 100;
+$sales = Real(random(100000, 500000, 50000));
+$commission = $sales * $commission_rate1;
+$total_pay = $base_pay + $commission;
+
+Context("Currency");
+
+$base_pay = Currency($base_pay);
+$sales = Currency($sales);
+$commission = Currency($commission);
+$total_pay = Currency($total_pay);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose a salesperson gets a commission of 
+\($commission_rate1_PER $PERCENT\)
+on sales of insurance plans in addition to a base salary of
+\($base_pay\) per month.  In August, the salesperson was
+responsible for sales of insurance plans in the amount of
+\($sales\).  
+$PAR
+Calculate the salesperson's total pay (i.e.,
+sales plus commission) for the month of August.
+$PAR
+\{ANS_RULE(a1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($total_pay)->with(tolerance=>.05)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+The commission is \($commission_rate1 \times $sales\ = $commission\).
+So the total pay is \($base_pay + $commission = $total_pay\).
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

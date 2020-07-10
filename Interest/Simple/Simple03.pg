@@ -1,0 +1,95 @@
+## DESCRIPTION
+## A simple interest problem asking to find P given I, r, and t.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'interest', 'simple interest')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Interest')
+## DBsection('Simple Interest')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+Context("Numeric");
+
+$I = random(1000, 9000, 500);
+$r_PER = random(1, 9, 1);
+$r = $r_PER / 100;
+$t = random(2, 9, 1);
+$P = $I/($r*$t);
+
+Context("Currency");
+
+$P = Currency($P);
+$I = Currency($I);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose a loan was taken out at a \($r_PER $PERCENT\)
+annual interest rate.  If \($I\) in simple interest
+was paid after \($t\) years, what was the principal?
+$PAR
+\{ANS_RULE(a1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+END_TEXT
+Context()->normalStrings;
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($P)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+This is an application of the simple interest formula
+\[
+I = Prt,
+\]
+$PAR
+where \(I = $I\), \(r = $r\), and \(t = $t\).  Solving
+for \(P\) gives \[P = \frac{I}{rt}.\]  Plugging everything in
+gives \(P = \frac{$I}{$r\times $t} = $P\).
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

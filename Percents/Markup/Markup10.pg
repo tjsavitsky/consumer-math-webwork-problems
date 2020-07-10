@@ -1,0 +1,108 @@
+## DESCRIPTION
+## Find the cost of an item given the selling price and the markup percent
+## based on cost.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'markup', 'dollar markup',)
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Percents')
+## DBsection('Markup')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+Context("Numeric");
+
+$c = random(200, 1000, 20);
+$mpboc_PER = random(20, 50, 5);
+$mpboc = $mpboc_PER / 100;
+$m = $c * $mpboc;
+$s = $c + $m;
+$mpbos = $m/$s;
+$one_plus_mpboc = 1 + $mpboc;
+
+Context("Currency");
+
+$c = Currency($c);
+$s = Currency($s);
+$m = Currency($m);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose an item has a selling price of \($s\).
+Assuming the markup percent based on cost (${BITALIC}not $EITALIC selling price)
+is \($mpboc_PER $PERCENT\), what is the cost?
+
+$PAR
+\{ANS_RULE(a1, 10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+
+
+
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($c)->with(tolType => 'absolute', tolerance => .025,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+Let \(M\) denote the dollar markup,
+\(C\) the cost, and 
+\(S\) the selling price.
+Recall that \(S = C + M\) and that
+the markup percent based on cost is \(\frac{M}{C}\).
+$PAR
+So \(\frac{M}{C} = $mpboc\), and thus \(M = $mpboc C\).
+Since \(S = M+C\), we have \(S = $mpboc C + C\).
+So \(S = $one_plus_mpboc C\). Solving for \(C\)
+gives \(C = \frac{S}{$one_plus_mpboc} = \frac{$s}{$one_plus_mpboc}
+= $c\).
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

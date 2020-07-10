@@ -1,0 +1,169 @@
+## DESCRIPTION
+## Find the maturity value and proceeds of an interest-bearing
+## promissory note that is sold at a discount before maturity.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'interest', 'discount', 'promissory')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Percents')
+## DBsection('Discounts')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl",
+  "contextArbitraryString.pl",
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+
+Context("Numeric");
+
+$principal = random(1000, 9000, 100);
+$interest_rate_PER = random(5, 15, 1);
+$interest_rate = $interest_rate_PER / 100;
+$discount_rate_PER = $interest_rate_PER + random(1, 3, 1);
+$discount_rate = $discount_rate_PER / 100;
+$interest_days = random(60, 120, 10);
+$discount_days = random(15, 45, 5);
+$days_in_year = 365;
+$maturity = $principal + $principal * $interest_rate * $interest_days / $days_in_year;
+$discount_amt = $maturity * $discount_rate * $discount_days / $days_in_year;
+$proceeds = $maturity - $discount_amt;
+
+$note_time = time(); #in seconds since Unix epoch
+$note_time = $note_time - random(365, 700)*60*60*24; #roughly one or two years ago
+($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime($note_time);
+$note_day = $mday;
+$note_month = $mon+1;
+$note_year = $year+1900;
+
+$maturity_time = $note_time + $interest_days * 60 * 60 * 24;
+($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime($maturity_time);
+$maturity_day = $mday;
+$maturity_month = $mon+1;
+$maturity_year = $year+1900;
+
+$discount_time = $maturity_time - $discount_days * 60 * 60 * 24;
+($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime($discount_time);
+$discount_day = $mday;
+$discount_month = $mon+1;
+$discount_year = $year+1900;
+
+
+Context("Currency");
+
+$principal = Currency($principal);
+$discount_amt = Currency($discount_amt);
+$maturity = Currency($maturity);
+$proceeds = Currency($proceeds);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose a promissory note was made on 
+\($note_month/$note_day/$note_year\).
+It has a maturity date of \($maturity_month/$maturity_day/$maturity_year\),
+a face value of \($principal\), and an annual interest rate of
+\($interest_rate_PER $PERCENT\).
+
+$PAR
+$HR
+a) Find the number of interest days.
+$PAR
+\{ANS_RULE(a1,6)\} days
+$PAR
+$HR
+b) Find the maturity value.  Use a \($days_in_year\)-day year.
+$PAR
+\{ANS_RULE(a1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+$HR
+c) Suppose the note is sold to a third party on 
+\($discount_month/$discount_day/$discount_year\)
+at a discount rate of \($discount_rate_PER $PERCENT\).
+Find the number of discount days.
+$PAR
+\{ANS_RULE(a1,10)\} days
+$PAR
+$HR
+d) Find the discount amount.  Use a \($days_in_year\)-day year.
+$PAR
+\{ANS_RULE(a1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+$HR
+e) Calculate the proceeds.
+$PAR
+\{ANS_RULE(a1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($interest_days)->with(tolType => 'absolute', tolerance => 0.015,)->cmp);
+ANS(Compute($maturity)->with(tolType => 'absolute', tolerance => 0.015,)->cmp);
+ANS(Compute($discount_days)->with(tolType => 'absolute', tolerance => 0.015,)->cmp);
+ANS(Compute($discount_amt)->with(tolType => 'absolute', tolerance => 0.015,)->cmp);
+ANS(Compute($proceeds)->with(tolType => 'absolute', tolerance => 0.025,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+a) There are \($interest_days\) interest days.
+$PAR
+b) The maturity value is \($principal + $principal \times
+$interest_rate \times \frac{$interest_days}{$days_in_year} =
+$maturity\).
+$PAR
+c) There are \($discount_days\) discount days.
+$PAR
+d) The discount amount is \($maturity \times $discount_rate \times
+\frac{$discount_days}{$days_in_year} = $discount_amt\).
+$PAR
+e) The proceeds are \($maturity - $discount_amt = $proceeds\).
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

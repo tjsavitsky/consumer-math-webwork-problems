@@ -1,0 +1,106 @@
+## DESCRIPTION
+## Practice rounding to the nearest cent.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'rounding')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Arithmetic')
+## DBsection('Fractions')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl",
+  "contextArbitraryString.pl",
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+
+Context("Numeric");
+
+
+$x = random(12,20,0.01);
+$delta = random(0.001, 0.004, 0.001);
+$toround = $x + $delta;
+$rounddown = $x;
+$roundup = $x + 0.01;
+$rounded = $x;
+
+$parta = sprintf("%0.2f", $rounddown);
+$partb = sprintf("%0.2f", $roundup);
+$partc = sprintf("%0.2f", $rounded);
+$dollar = '\$';
+
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+$PAR
+a) Round \(${dollar}$toround\) $BITALIC down to $EITALIC the nearest cent.
+$PAR
+\($dollar\)\{ANS_RULE(a1,10)\}
+$PAR
+$HR
+b) Round \(${dollar}$toround\) $BITALIC up to $EITALIC the nearest cent.
+$PAR
+\($dollar\)\{ANS_RULE(a2,10)\}
+$PAR
+$HR
+c) Round \(${dollar}$toround\) to the nearest cent.
+$PAR
+\($dollar\)\{ANS_RULE(a3,10)\}
+$PAR
+END_TEXT
+Context()->normalStrings;
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($rounddown)->with(tolType => 'absolute', tolerance => .0001,)->cmp);
+ANS(Compute($roundup)->with(tolType => 'absolute', tolerance => .0001,)->cmp);
+ANS(Compute($rounded)->with(tolType => 'absolute', tolerance => .0001,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+a) \(${dollar}$parta\)
+$PAR
+b) \(${dollar}$partb\)
+$PAR
+c) \(${dollar}$partc\)
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

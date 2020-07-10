@@ -1,0 +1,100 @@
+## DESCRIPTION
+## A simple word problem involving revenue.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'word problem')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Arithmetic')
+## DBsection('Word Problems')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl",
+  "contextArbitraryString.pl",
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+
+Context("Numeric");
+
+$street_price = random(0.75, 1.50, 0.25);
+$weeks = random(13, 52, 13);
+$daily_sub_price = $street_price - random(0.1, 0.25, 0.1);
+$days = $weeks * 7;
+$total_sub_price = $daily_sub_price * $days;
+$daily_savings = $street_price - $daily_sub_price;
+
+Context("Currency");
+
+$street_price = Currency($street_price);
+$daily_sub_price = Currency($daily_sub_price);
+$total_sub_price = Currency($total_sub_price);
+$daily_savings = Currency($daily_savings);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose a newspaper is sold on the street for
+\($street_price\).  A seven-day-a-week,
+\($weeks\)-week subscription is available for
+\($total_sub_price\).  How much would one save per day
+by subscribing instead of buying the newspaper on the street?
+$PAR
+\{ANS_RULE(a1,6)\} per day
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+END_TEXT
+Context()->normalStrings;
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($daily_savings)->with(tolType => 'absolute', tolerance => .001,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+A \($total_sub_price\) subscription buys
+\(7 \times $weeks = $days\) newspapers.  So, if subscribing, the price per day
+would be \(\frac{$total_sub_price}{$days} = $daily_sub_price\).
+Therefore, one saves \($street_price - $daily_sub_price =
+$daily_savings\) by subscribing.
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

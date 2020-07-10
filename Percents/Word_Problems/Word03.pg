@@ -1,0 +1,91 @@
+## DESCRIPTION
+## Find the rate from the base and percentage.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'percent')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Percents')
+## DBsection('Word Problems)
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl",
+  "contextArbitraryString.pl",
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+
+Context("Numeric");
+
+$yearly = random(40000, 90000, 5000);
+$bonus = random(1000, 9000, 1000);
+$rate = ($bonus/$yearly);
+$rate_PER = $rate * 100;;
+
+Context("Currency");
+
+$yearly = Currency($yearly);
+$bonus = Currency($bonus);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Jan's base salary is \($yearly\) per year.
+This year, Jan got a Christmas bonus of \($bonus\) due
+to the generosity of the senior management.
+Fill in the blank.
+$PAR
+Jan's bonus was \{ANS_RULE(a1,6)\}\(%\) of his base salary.
+$PAR
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($rate_PER)->with(tolType => 'absolute', tolerance => .02,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+The bonus was \(\frac{$bonus}{$yearly} = $rate = $rate_PER $PERCENT\)
+of the yearly salary.
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

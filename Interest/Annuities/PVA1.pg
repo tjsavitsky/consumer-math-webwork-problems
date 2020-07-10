@@ -1,0 +1,113 @@
+## DESCRIPTION
+## Find the periodic withdrawal required to deplete a fund
+## with a specified initial balance and interest rate.
+## Interest is compounded quarterly.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'interest', 'annuity')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Interest')
+## DBsection('Annuities')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+Context("Numeric");
+
+$r_PER = random(6, 12, 2);
+$r = $r_PER / 100;
+$i_PER = $r_PER / 4;
+$i = $i_PER / 100;
+$pmt = random(10000, 40000, 1000);
+$t = random(3, 6, 1);
+$n = $t*4;
+$pva = $pmt * (1-(1+$i)**(-$n))/$i;
+
+Context("Currency");
+
+$pmt = Currency($pmt);
+$pva = Currency($pva);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose that, today, a wealthy benefactor agreed to make a large deposit 
+on your behalf into an account with a hedge fund that consistently earns
+interest at the annual rate of \($r_PER $PERCENT\), compounded
+quarterly.
+The desposit should enable you to withdraw \($pmt\)
+every quarter for the next \($t\) years.
+Your first withdrawal will be made one quarter from now, and
+after your last withdrawal, the account should be empty.
+$PAR
+How much should the large deposit be?
+$PAR
+\{ANS_RULE(10)\}
+$PAR
+
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($pva)->with(tolType => 'absolute', tolerance => .035,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+This is an application of the present value of an annuity formula
+\[
+PVA = PMT \, \frac{1-(1+i)^{-n}}{i},
+\]
+$PAR
+where \(PMT = $pmt\), \(i=\frac{$r}{4}=$i\), and \(n=4\times $t=$n\).
+Plugging everything in, we see that
+$PAR
+\[
+PVA = $pmt \times \frac{1-(1+$i)^{-$n}}{$i} = $pva.
+\]
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

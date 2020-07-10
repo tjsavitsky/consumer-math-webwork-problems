@@ -1,0 +1,109 @@
+## DESCRIPTION
+## Find the net price given a trade discount.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'discount', 'trade discount', 'list price', 'net price')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Percents')
+## DBsection('Discounts')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl",
+  "contextArbitraryString.pl",
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+
+Context("Numeric");
+
+$list_price = Real(random(20, 50, 5));
+$discount_rate1_PER = Real(random(5, 35, 5));
+$discount_rate1 = $discount_rate1_PER / 100;
+$discount_amt = $list_price * $discount_rate1;
+$net_price = $list_price - $discount_amt;
+
+Context("Currency");
+
+$list_price = Currency($list_price);
+$discount_amt = Currency($discount_amt);
+$net_price = Currency($net_price);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose a supplier lists a case of tomato sauce for sale
+at \($list_price\).  A restaurant qualifies for a trade
+discount of \($discount_rate1_PER $PERCENT\).
+
+$PAR
+a) Calculate the discount amount, in dollars.
+$PAR
+\{ANS_RULE(a1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+$HR
+b) Calculate the net price or remittance.
+$PAR
+\{ANS_RULE(a1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($discount_amt)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+ANS(Compute($net_price)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+a) The discount amount is \($list_price \times $discount_rate1
+= $discount_amt\).
+$PAR
+b) The net price is \($list_price - $discount_amt = $net_price\).
+$PAR
+
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

@@ -1,0 +1,94 @@
+## DESCRIPTION
+## A simple interest problem asking to find t given P, I, and r.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'interest', 'simple interest')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Interest')
+## DBsection('Simple Interest')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+Context("Numeric");
+
+$P = random(5000, 40000, 5000);
+$r_PER = random(1, 9, 1);
+$r = $r_PER / 100;
+$t = random(2, 9, 1);
+$I = $P*$r*$t;
+
+Context("Currency");
+
+$P = Currency($P);
+$I = Currency($I);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose \($I\) in simple interest was paid on a 
+\($P\) loan that was taken out at a \($r_PER $PERCENT\)
+annual interest rate.  What was the duration of the loan?
+$PAR
+\{ANS_RULE(a1,10)\} years
+$PAR
+END_TEXT
+Context()->normalStrings;
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($t)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+This is an application of the simple interest formula
+\[
+I = Prt,
+\]
+$PAR
+where \(P = $P\), \(I = $I\), and \(r = $r\).  Solving
+for \(t\) gives \[t = \frac{I}{Pr}.\]  Plugging everything in
+gives \(t = \frac{$I}{$P\times $r} = $t\) years.
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

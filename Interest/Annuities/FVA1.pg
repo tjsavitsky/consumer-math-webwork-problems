@@ -1,0 +1,110 @@
+## DESCRIPTION
+## Find the amount in a retirement account.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'interest', 'future value', 'annuity')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Interest')
+## DBsection('Annuities')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+Context("Numeric");
+
+$pmt = random(200,800,50);
+$r = random(1,9,0.1);
+$t = random(20,40,1);
+$n = 12*$t;
+$dec = $r/100;
+$i = ($dec)/12;
+$fva = $pmt*(((1 + $i)**($n) - 1)/($i));
+
+Context("Currency");
+
+$pmt = Currency($pmt);
+$fva = Currency($fva);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose \($pmt\) is involuntarily deducted each month from
+Mikhail's paycheck and deposited into a retirement account
+that consistently earns interest at the annual rate of \($r $PERCENT\),
+compounded monthly.
+
+$PAR
+How much will Mikhail's retirement account
+be worth after \($t\) years?  (Assume deposits do not earn
+interest until after they have been in place for one month.
+In particular, the last deposit will not earn any interest.)
+
+$PAR
+\{ANS_RULE(10)\}
+$PAR
+
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($fva)->with(tolType => 'absolute', tolerance => .035,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+This is an application of the future value of an annuity formula
+\[
+FVA = PMT \, \frac{(1+i)^n-1}{i},
+\]
+$PAR
+where \(PMT = $pmt, \text{ }i = \frac{$dec}{12}, \text{ and } n = $t \times 12 = $n\). Plugging everything in, we see that
+$PAR
+\[
+FVA = $fva.
+\]
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

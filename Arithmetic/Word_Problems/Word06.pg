@@ -1,0 +1,146 @@
+## DESCRIPTION
+## Calculate the time it will take for one vehicle to overtake another.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'word problem', 'overtake')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Arithmetic')
+## DBsection('Word Problems')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl",
+  "contextArbitraryString.pl",
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+
+Context("Numeric");
+
+# decimal hours to a time in AM
+# e.g., toTime(9.5) should output "9:30 am"
+sub toTime {
+    my $duration = pop;
+    my $hours, $minutes;
+    $hours = floor($duration);
+    $minutes = ($duration - floor($duration))*60;
+    return sprintf("%1.0f:%02.0f am", $hours, $minutes);
+}
+
+# e.g., getMinutes(8.2) should return "12"
+sub getMinutes {
+    my $duration = pop;
+    my $minutes;
+    $minutes = ($duration - floor($duration))*60;
+    return sprintf("%02.0f", $minutes);
+}
+
+$rate1 = random(50, 60, 2);
+$rate2 = $rate1 + random(10, 15, 1);
+$distance = random(200, 260, 5);
+$leave1 = random(6, 6.5, 1/60);
+$leave2 = $leave1 + random(5/60, 25/60, 5/60);
+
+$prettytime1 = toTime($leave1);
+$prettytime2 = toTime($leave2);
+
+$arrive1 = $leave1+$distance/$rate1;
+$hours1 = floor($arrive1);
+$minutes1 = getMinutes($arrive1);
+$arrive2 = $leave2+$distance/$rate2;
+$hours2 = floor($arrive2);
+$minutes2 = getMinutes($arrive2);
+
+$headstart = $rate1 * ($leave2-$leave1); #in miles
+$overtake = $leave2 + $headstart / ($rate2 - $rate1); #in hours
+$hours3 = floor($overtake);
+$minutes3 = getMinutes($overtake);
+
+$prettyans1 = "${hours1}:${minutes1} am";
+$prettyans2 = "${hours2}:${minutes2} am";
+$prettyans3 = "${hours3}:${minutes3} am";
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose you are scheduled to take a field trip to a museum in
+another city \($distance\) miles away.  A minivan is scheduled
+to depart campus at $BBOLD $prettytime1, $EBOLD and it will drive directly
+to the museum at the constant rate of \($rate1\) mph.
+Unfortunately, you oversleep and miss the minivan.
+You immediately hire an Uber driver to take to take you to
+the museum at $BBOLD $prettytime2. $EBOLD  The Uber driver promises to
+drive at the constant rate of \($rate2\) mph.
+$PAR
+a) To the nearest minute, when will the minivan arrive at the museum?
+$PAR
+\{ANS_RULE(a1,1)\}\(:\)\{ANS_RULE(a2,1)\}am
+$HR
+b) To the nearest minute, when will the Uber driver arrive at the museum?
+$PAR
+\{ANS_RULE(b1,1)\}\(:\)\{ANS_RULE(b2,1)\}am
+$HR
+$PAR
+c) To the nearest minute, when will the Uber driver overtake the minivan?
+$PAR
+\{ANS_RULE(c1,1)\}\(:\)\{ANS_RULE(c2,1)\}am
+$PAR
+END_TEXT
+Context()->normalStrings;
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($hours1)->with(tolType => 'absolute', tolerance => 0.01,)->cmp);
+ANS(Compute($minutes1)->with(tolType => 'absolute', tolerance => 1,)->cmp);
+ANS(Compute($hours2)->with(tolType => 'absolute', tolerance => 0.01,)->cmp);
+ANS(Compute($minutes2)->with(tolType => 'absolute', tolerance => 1,)->cmp);
+ANS(Compute($hours3)->with(tolType => 'absolute', tolerance => 0.01,)->cmp);
+ANS(Compute($minutes3)->with(tolType => 'absolute', tolerance => 1,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+a) $prettyans1
+$HR
+b) $prettyans2
+$HR
+c) $prettyans3
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

@@ -1,0 +1,97 @@
+## DESCRIPTION
+## Find the markup percent based on selling price given the markup
+## percent based on cost.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'markup', 'dollar markup',)
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Percents')
+## DBsection('Markup')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+Context("Numeric");
+
+$mpbos_PER = Real(random(5, 75, 5));
+$mpbos = $mpbos_PER / 100;
+$mpboc = $mpbos / (1 - $mpbos);
+$mpboc_PER = $mpboc * 100;
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose the markup percent based on selling price of an item is
+\($mpbos_PER $PERCENT.\)  Find the markup percent
+based on cost.
+
+$PAR
+\{ANS_RULE(a1,10)\}\(%\)
+$PAR
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($mpboc_PER)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+Let \(M\) denote the dollar markup,
+\(C\) the cost, and 
+\(S\) the selling price.
+Recall that \(S = C + M\).
+$PAR
+The markup percent based on cost is \(\frac{M}{C}\),
+and the markup percent based on selling price is \(\frac{M}{S}\).
+$PAR
+We are given \(\frac{M}{S} = $mpbos_PER $PERCENT = $mpbos\).
+So \(M = $mpbos S\).  Thus \(\frac{M}{C} = \frac{M}{S-M}
+= \frac{$mpbos S}{S - $mpbos s} = \frac{1}{1-$mpbos}
+= $mpboc = $mpboc_PER $PERCENT\).
+$PAR
+Therefore, the markup percent based on cost is
+\($mpboc_PER $PERCENT\).
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

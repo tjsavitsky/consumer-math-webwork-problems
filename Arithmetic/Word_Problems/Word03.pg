@@ -1,0 +1,97 @@
+## DESCRIPTION
+## Calculate the time it will take for two trains to collide.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'word problem', 'trains')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Arithmetic')
+## DBsection('Word Problems')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl",
+  "contextArbitraryString.pl",
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+
+Context("Numeric");
+
+$trainA_speed = random(10, 35, 5);
+$trainB_speed = random(15, 40, 5);
+$distance = random(100, 140, 5);
+$speed_sum = $trainA_speed + $trainB_speed;
+$time = $distance/($trainA_speed + $trainB_speed);
+$hours = floor($time);
+$minutes = ($time - floor($time))*60;
+$minutes = sprintf("%1.0f", $minutes);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose two trains, say \(A\) and \(B\) are
+initially \($distance\) miles apart
+on the same east-west track. Train \(A\) is initially
+to the west of Train \(B\).
+Train \(A\) begins to head due east at \($trainA_speed\) mph, and
+Train \(B\) begins to head due west at \($trainB_speed\) mph.
+To the nearest minute, how long will it take for the two trains to collide?
+$PAR
+\{ANS_RULE(a1,2)\} hours and \{ANS_RULE(a2,2)\} minutes
+$PAR
+END_TEXT
+Context()->normalStrings;
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($hours)->with(tolType => 'absolute', tolerance => .01,)->cmp);
+ANS(Compute($minutes)->with(tolType => 'absolute', tolerance => .01,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+The distance between the trains decreases at the 
+rate of \($trainA_speed + $trainB_speed = $speed_sum\) mph.
+The trains will collide when this distance becomes zero.
+Therefore, the trains will collide after \(\frac{$distance}{$speed_sum}
+= $time\) hours, which is  \($hours\) hours and \($minutes\)
+minutes, to the nearest minute.
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

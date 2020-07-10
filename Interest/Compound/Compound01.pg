@@ -1,0 +1,113 @@
+## DESCRIPTION
+## Find the future value of a savings account.
+## Interest is compounded yearly.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'interest', 'compound')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Interest')
+## DBsection('Compound')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+Context("Numeric");
+
+$P = random(1000, 9000, 100);
+#$FV = 
+$r_PER = random(1, 5, 1);
+$r = $r_PER / 100;
+$m = 1;
+$t = random(2, 8, 1);
+$i_PER = $r_PER/$m;
+$i = $i_PER/100;
+$n = $t*$m;
+
+$FV = $P*(1 + $i)**$n;
+
+@names = ("Rina", "Michelle", "Chloe", "Iona", "Rasheed");
+$name = $names[random(0, $#names, 1)];
+
+Context("Currency");
+
+$P = Currency($P);
+$FV = Currency($FV);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose that $name has a savings account with an initial
+balance of \($P\).  The account consistently earns interest
+at the annual rate of \($r_PER $PERCENT\), compounded yearly.
+What will be the value of the account in \($t\) years' time,
+assuming $name does not touch the account in the mean time?
+$PAR
+\{ANS_RULE(10)\}
+$PAR
+
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($FV)->with(tolType => 'absolute', tolerance => .025,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+This is an application of the future value formula
+\[
+FV = P\Big(1+\frac{r}{m}\Big)^{mt},
+\]
+$PAR
+where \(P=$P\), \(r=$r\), \(m=$m\), and \(t=$t\).
+Plugging everything in, we see that
+$PAR
+\[
+FV = $P\Big(1+\frac{$r}{$m}\Big)^{$m \times $t} = $P(1+$i)^{$n}=$FV.
+\]
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

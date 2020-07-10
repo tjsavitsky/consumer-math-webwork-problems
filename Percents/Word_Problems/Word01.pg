@@ -1,0 +1,92 @@
+## DESCRIPTION
+## Find the whole based on the percent and percentage.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'percent')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Percents')
+## DBsection('Word Problems)
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl",
+  "contextArbitraryString.pl",
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+
+Context("Numeric");
+
+$stipend = random(2000, 8000, 1000);
+$yearly_PER = random(5, 15, 1);
+$yearly = $yearly_PER / 100;
+$annual_salary = $stipend / $yearly;
+
+Context("Currency");
+
+$stipend = Currency($stipend);
+$annual_salary = Currency($annual_salary);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose Marcus got a summer stipend of \($stipend\).  This stipend
+equals \($yearly_PER $PERCENT\) of his annual salary.  Calculate
+Marcus' annual salary.
+$PAR
+\{ANS_RULE(a1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($annual_salary)->with(tolType => 'absolute', tolerance => .02,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+The annual salary equals \(\frac{$stipend}{$yearly_PER $PERCENT} =
+\frac{$stipend}{$yearly} = $annual_salary\).
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

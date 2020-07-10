@@ -1,0 +1,91 @@
+## DESCRIPTION
+## Practice rounding to the nearest cent.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'decimals')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Arithmetic')
+## DBsection('Decimals')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl",
+  "contextArbitraryString.pl",
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+
+Context("Numeric");
+
+
+$x = random(10,20,0.01);
+$y = random(1,9, 0.01);
+$parta = $x + $y;
+$partb = $x - $y;
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+$PAR
+a) Calculate \($x + $y\) $BITALIC without $EITALIC the use of a calculator.
+$PAR
+\{ANS_RULE(a1,10)\}
+$PAR
+$HR
+b) Calculate \($x - $y\) $BITALIC without $EITALIC the use of a calculator.
+$PAR
+\{ANS_RULE(a2,10)\}
+$PAR
+END_TEXT
+Context()->normalStrings;
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($parta)->with(tolType => 'absolute', tolerance => .0001,)->cmp);
+ANS(Compute($partb)->with(tolType => 'absolute', tolerance => .0001,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+a) \($x+$y=$parta\)
+$PAR
+$HR
+b) \($x-$y=$partb\)
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

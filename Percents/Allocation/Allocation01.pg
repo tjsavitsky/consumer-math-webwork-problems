@@ -1,0 +1,170 @@
+## DESCRIPTION
+## Allocate a budget based on the number of employees.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'allocation')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Percents')
+## DBsection('Allocation')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl",
+  "contextArbitraryString.pl",
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+
+Context("Numeric");
+
+$budget = random(20000, 90000, 5000);
+$math = random(2, 5, 1);
+$history = random(2, 5, 1);
+$english = random(2, 5,1);
+$biology = random(2, 5,1);
+$chemistry = random(2, 5,1);
+$physics = 1;
+$total = $math+$history+$english+$biology+$chemistry+$physics;
+
+$math_budget = $budget*($math/$total);
+$history_budget = $budget*($history/$total);
+$english_budget = $budget*($english/$total);
+$biology_budget = $budget*($biology/$total);
+$chemistry_budget = $budget*($chemistry/$total);
+$physics_budget = $budget*($physics/$total);
+
+Context("Currency");
+
+$budget = Currency($budget);
+$math_budget = Currency($math_budget);
+$history_budget = Currency($history_budget);
+$english_budget = Currency($english_budget);
+$biology_budget = Currency($biology_budget);
+$chemistry_budget = Currency($chemistry_budget);
+$physics_budget = Currency($physics_budget);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose a college wishes to allocate a \($budget\) equipment
+budget to its six constituent departments based on their number
+of full-time faculty members.
+$PAR
+The Mathematics Department has \($math\) full-time faculty members,
+History has \($history\),
+English has \($english\),
+Biology has \($biology\), 
+Chemistry has \($chemistry\), and
+Physics has \($physics\).
+$PAR
+$HR
+a) Calculate the amount allocated to the Mathematics Department.
+$PAR
+\{ANS_RULE(a1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+$HR
+b) Calculate the amount allocated to the History Department.
+$PAR
+\{ANS_RULE(b1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+$HR
+c) Calculate the amount allocated to the English Department.
+$PAR
+\{ANS_RULE(c1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+$HR
+d) Calculate the amount allocated to the Biology Department.
+$PAR
+\{ANS_RULE(d1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+$HR
+e) Calculate the amount allocated to the Chemistry Department.
+$PAR
+\{ANS_RULE(e1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+$HR
+f) Calculate the amount allocated to the Physics Department.
+$PAR
+\{ANS_RULE(f1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($math_budget)->with(tolType => 'absolute', tolerance => .05,)->cmp);
+ANS(Compute($history_budget)->with(tolType => 'absolute', tolerance => .05,)->cmp);
+ANS(Compute($english_budget)->with(tolType => 'absolute', tolerance => .05,)->cmp);
+ANS(Compute($biology_budget)->with(tolType => 'absolute', tolerance => .05,)->cmp);
+ANS(Compute($chemistry_budget)->with(tolType => 'absolute', tolerance => .05,)->cmp);
+ANS(Compute($physics_budget)->with(tolType => 'absolute', tolerance => .05,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+There are \($math+$history+$english+$biology+$chemistry+$physics=$total\)
+faculty members in total.
+$PAR
+a) \($budget \times \frac{$math}{$total} = $math_budget\).
+$PAR
+b) \($budget \times \frac{$history}{$total} = $history_budget\).
+$PAR
+c) \($budget \times \frac{$english}{$total} = $english_budget\).
+$PAR
+d) \($budget \times \frac{$biology}{$total} = $biology_budget\).
+$PAR
+e) \($budget \times \frac{$chemistry}{$total} = $chemistry_budget\).
+$PAR
+f) \($budget \times \frac{$physics}{$total} = $physics_budget\).
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

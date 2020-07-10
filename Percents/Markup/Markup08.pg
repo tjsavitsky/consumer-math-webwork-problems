@@ -1,0 +1,98 @@
+## DESCRIPTION
+## Find the cost given the selling price and
+## markup percent based on selling price.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'markup', 'dollar markup',)
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Percents')
+## DBsection('Markup')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+Context("Numeric");
+
+$s = Real(random(200, 4000, 10));
+$mpbos_PER = Real(random(10, 75, 5));
+$mpbos = $mpbos_PER / 100;
+$m = $mpbos * $s;
+$c = $s - $m;
+
+Context("Currency");
+
+$c = Currency($c);
+$s = Currency($s);
+$m = Currency($m);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+What is the cost of an item that retails for
+\($s\), including a markup percent of 
+\($mpbos_PER $PERCENT\) based on selling price?
+
+$PAR
+\{ANS_RULE(a1, 10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+
+
+
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($c)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+The dollar markup is \($s \times $mpbos_PER $PERCENT
+= $s \times $mpbos = $m\).
+$PAR
+The cost is therefore \($s - $m = $c\).
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

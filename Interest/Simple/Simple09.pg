@@ -1,0 +1,140 @@
+## DESCRIPTION
+## Compute simple interest.  The annual interest rate is not a whole number.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'interest', 'future value', 'simple interest')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Interest')
+## DBsection('Simple Interest')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+Context("Numeric");
+
+$P = random(1000,20000,500);
+$r_PER = random(1.5, 9.5, 1);
+$r = $r_PER / 100;
+$t_a = 1/4;
+$t_b = 1/2;
+$t_c = 1;
+$t_d = random(2,8,1);
+$I_a = $P*$r*$t_a;
+$I_b = $P*$r*$t_b;
+$I_c = $P*$r*$t_c;
+$I_d = $P*$r*$t_d;
+
+Context("Currency");
+
+$P = Currency($P);
+$I_a = Currency($I_a);
+$I_b = Currency($I_b);
+$I_c = Currency($I_c);
+$I_d = Currency($I_d);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose a \($P\) is loan is taken out at a \($r_PER $PERCENT\)
+annual interest rate.  Assume the interest is simple and not
+compounded.
+
+$PAR
+$HR
+a) Calculate the simple interest due after \(\frac{1}{4}\) a year.
+$PAR
+\{ANS_RULE(a1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+$HR
+b) Calculate the simple interest due after \(\frac{1}{2}\) a year.
+$PAR
+\{ANS_RULE(b1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+$HR
+c) Calculate the simple interest due after one year.
+$PAR
+\{ANS_RULE(c1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+$HR
+d) Calculate the simple interest due after \($t_d\) years.
+$PAR
+\{ANS_RULE(d1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+
+END_TEXT
+Context()->normalStrings;
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($I_a)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+ANS(Compute($I_b)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+ANS(Compute($I_c)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+ANS(Compute($I_d)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+This is an application of the simple interest formula
+\[
+I = Prt,
+\]
+$PAR
+where \(P = $P\), \(r = $r\), and \(t\) is different in each part.
+$PAR
+a) Here, \(t = $t_a\).  So \(I = Prt = $P \times $r \times $t_a = $I_a\).
+$PAR
+b) Here, \(t = $t_b\).  So \(I = Prt = $P \times $r \times $t_b = $I_b\).
+$PAR
+c) Here, \(t = $t_c\).  So \(I = Prt = $P \times $r \times $t_c = $I_c\).
+$PAR
+d) Here, \(t = $t_d\).  So \(I = Prt = $P \times $r \times $t_d = $I_d\).
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

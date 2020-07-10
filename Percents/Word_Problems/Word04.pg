@@ -1,0 +1,94 @@
+## DESCRIPTION
+## Find the percentage from the base and the rate.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'percent')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Percents')
+## DBsection('Word Problems)
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl",
+  "contextArbitraryString.pl",
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+
+Context("Numeric");
+
+$rate_PER = random(2, 9, 1);
+$rate = $rate_PER / 100;;
+$weekly = random(500, 900, 50);
+$fun = $weekly * $rate;
+
+Context("Currency");
+
+$weekly = Currency($weekly);
+$fun = Currency($fun);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose Thomas's weekly salary is \($weekly\) per week.
+Thomas permits himself to spend \($rate_PER $PERCENT\) of
+his salary on entertainment.  How much 
+is he allowed to spend per week on entertainment?
+$PAR
+\{ANS_RULE(a1,10)\} per week
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($fun)->with(tolType => 'absolute', tolerance => .02,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+The entertainment budget is
+\($weekly \times $rate_PER $PERCENT = $weekly \times $rate = $fun\)
+per week.
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

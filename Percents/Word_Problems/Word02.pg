@@ -1,0 +1,89 @@
+## DESCRIPTION
+## Find the rate of increase.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'percent', 'rate')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Percents')
+## DBsection('Word Problems')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl",
+  "contextArbitraryString.pl",
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+
+Context("Numeric");
+
+$old = random(100000, 500000, 10000);
+$new = $old + random(50000,100000,10000);
+$rate = ($new-$old)/$old;
+$rate_PER = $rate * 100;
+
+Context("Currency");
+
+$old = Currency($old);
+$new = Currency($new);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose a department's budget increased from \($old\) last year
+to \($new\) this year. Find the rate of increase of the budget.
+$PAR
+\{ANS_RULE(a1,8)\}\(%\) per year
+$PAR
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($rate_PER)->with(tolType => 'absolute', tolerance => .02,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+The rate of increase equals \(\frac{$new - $old}{$old} =
+ $rate = $rate_PER $PERCENT\) per year.
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

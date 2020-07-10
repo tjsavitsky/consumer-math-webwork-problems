@@ -1,0 +1,137 @@
+## DESCRIPTION
+## Find the amount credited to a buyer's account
+## for a partially paid invoice.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'discount', 'invoice', 'remittance')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Percents')
+## DBsection('Discounts')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl",
+  "contextArbitraryString.pl",
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+
+Context("Numeric");
+
+$invoice = random(5000, 9000, 10);
+$payment = random(1000, 3000, 100);
+$discount_rate_PER = random(2, 4, 1);
+$discount_rate = $discount_rate_PER / 100;
+$discount_days = random(5, 15, 5);
+$credited = $payment / (1-$discount_rate);
+$unpaid = $invoice - $credited;
+$due_days = random(30, 60, 15);
+
+#a time between March 1, 2018 and December 31, 2018
+#in seconds since Unix epoch
+$invoice_time = random(1519862400, 1546300600, 100);
+($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime($invoice_time);
+$invoice_day = $mday;
+$invoice_month = $mon+1;
+$invoice_year = $year+1900;
+
+$discount_time = $invoice_time + $discount_days * 60 * 60 * 24;
+($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime($discount_time);
+$discount_day = $mday;
+$discount_month = $mon+1;
+$discount_year = $year+1900;
+
+$due_time = $invoice_time + $due_days * 60 * 60 * 24;
+($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime($due_time);
+$due_day = $mday;
+$due_month = $mon+1;
+$due_year = $year+1900;
+
+
+Context("Currency");
+
+$invoice = Currency($invoice);
+$payment = Currency($payment);
+$credited = Currency($credited);
+$unpaid = Currency($unpaid);
+
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose a buyer receives a \($invoice\) invoice dated
+\($invoice_month/$invoice_day/$invoice_year\)
+with the terms \(${discount_rate_PER}/${discount_days}, n/${due_days}\).
+Assume the seller gives cash discounts for partially paid
+invoices.  Suppose the buyer remits a payment of
+\($payment\) within the discount period.
+
+$PAR
+a) Calculate the amount credited to the buyer's account.
+$PAR
+\{ANS_RULE(a1, 10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+$HR
+b) Calculate the buyer's unpaid balance.
+$PAR
+\{ANS_RULE(b1, 10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+
+END_TEXT
+Context()->normalStrings;
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($credited)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+ANS(Compute($unpaid)->with(tolType => 'absolute', tolerance => .025,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+a) The amount credited to the buyer's account is
+\(\frac{$payment}{1-$discount_rate} = $credited\).
+$PAR
+b) The buyer's unpaid balance is
+\($invoice - $credited = $unpaid\).
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

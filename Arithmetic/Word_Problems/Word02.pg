@@ -1,0 +1,94 @@
+## DESCRIPTION
+## A simple word problem involving revenue for selling dozens of items.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'word problem')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Arithmetic')
+## DBsection('Word Problems')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl",
+  "contextArbitraryString.pl",
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+
+Context("Numeric");
+
+$dozens = random(25, 50, 5);
+$items = 12*$dozens;
+$price_per_dozen = random(5, 20, 5);
+$revenue = $dozens * $price_per_dozen;
+@names = ("donuts", "kolaches", "eclairs", "cupcakes", "brownies");
+$name = $names[random(0, $#names, 1)];
+
+Context("Currency");
+
+$price_per_dozen = Currency($price_per_dozen);
+$revenue = Currency($revenue);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose a bakery sells boxes of a dozen $name for \($price_per_dozen\).
+Yesterday, the bakery received revenues of \($revenue\) from
+sales of $name.  How many $name did the bakery sell yesterday?
+(Be careful.  The question asks for the number of $name sold yesterday,
+not the number of dozens of $name sold.)
+$PAR
+\{ANS_RULE(a1,6)\} $name
+$PAR
+END_TEXT
+Context()->normalStrings;
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($items)->with(tolType => 'absolute', tolerance => .01,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+The bakery sold \(\frac{$revenue}{$price_per_dozen} = $dozens\)
+dozens of $name yesterday.  Therefore, it sold
+\(12 \times $dozens = $items\) $name yesterday.
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

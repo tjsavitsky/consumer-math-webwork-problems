@@ -1,0 +1,107 @@
+## DESCRIPTION
+## Find the sum of a finite geometric series.
+## The answer is a fraction in lowest terms.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'geometric series')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Interest')
+## DBsection('Annuities')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "contextFraction.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+##############################################################
+#
+#  Setup
+#
+#
+
+Context("Numeric");
+Context("Fraction-NoDecimals");
+Context()->flags->set(reduceFractions=>0);
+$denom = random(2,5,1);
+$n = random(10, 15, 1);
+
+$ans = Compute("(1-(1/$denom)^($n+1))/(1-1/($denom))");
+Context()-> operators->undefine("-","+","*","^");
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+
+BEGIN_TEXT
+
+Express the following sum as a single fraction.  It
+is not necessary to reduce it to lowest terms.
+
+$PAR
+\[1 + \frac{1}{$denom} + \Big(\frac{1}{$denom}\Big)^2
+ + \Big(\frac{1}{$denom}\Big)^3 + \dots + \Big(\frac{1}{$denom}\Big)^{$n} = \]
+$PAR
+\{ans_rule(a1, 40)\}
+$PAR
+
+(${BBOLD}Note: $EBOLD To enter a fraction of the form \(\frac{a}{b}\), type a / b.)
+
+$PAR
+${BBOLD}Hint: $EBOLD The integers involved may be too big to display in your
+calculator.  In that case, try using a website that can function as an online
+calculator.  The Google search bar itself has this functionality.  For example,
+searching for 5^15 gives 30517578125.
+
+END_TEXT
+
+Context()->normalStrings;
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS($ans->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+This is an application of the formula for a finite geometric series
+\[
+1 + r + r^2 + \dots + r^n = \frac{1-r^{n+1}}{1-r},
+\]
+assuming \(r \ne 1\).
+Here, \(r = \frac{1}{$denom}\) and \(n = $n\).
+Therefore, the sum equals
+\[ \frac{1-\Big(\frac{1}{$denom}\Big)^{$n+1}}{1-\frac{1}{$denom}} = $ans.\]
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

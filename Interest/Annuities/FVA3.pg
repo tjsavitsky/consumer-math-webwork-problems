@@ -1,0 +1,90 @@
+## DESCRIPTION
+## Enter a future value of an annuity formula into a calculator.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'interest', 'future value', 'annuity')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Interest')
+## DBsection('Annuities')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+Context("Numeric");
+Context()->{format}{number} = "%.2f";
+
+$pmt = random(200,800,50);
+$r_PER = random(3,9,0.01);
+$t = random(10,30,1);
+$m = 12;
+$n = $t*$m;
+$r = $r_PER/100;
+$i = $r/$m;
+$fva = $pmt*(((1 + $i)**($n) - 1)/($i));
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Calculate \[
+$pmt \times \frac{(1+\frac{$r}{$m})^{$n}-1}{\frac{$r}{$m}}
+\]
+to at least two decimal places.
+
+$PAR
+\{ANS_RULE(10)\}
+$PAR
+
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($fva)->with(tolType => 'absolute', tolerance => .035,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+The answer is \($fva\).
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

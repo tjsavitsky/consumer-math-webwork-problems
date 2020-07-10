@@ -1,0 +1,119 @@
+## DESCRIPTION
+## Find the periodic payment required for a sinking fund to
+## obtain a specific future value.  Interest is compounded
+## yearly.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'interest', 'future value', 'sinking fund')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Interest')
+## DBsection('Annuities')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+Context("Numeric");
+
+$r_PER = random(2,8,0.5);
+$r = $r_PER / 100;
+$t = random(16, 21, 1);
+$n = $t;
+$i = $r;
+$fva = random(100000, 250000, 50000);
+$pmt = ($fva*$i)/((1+$i)**($n)-1);
+
+Context("Currency");
+
+$pmt = Currency($pmt);
+$fva = Currency($fva);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose the parents of a newborn decide to deposit
+the same amount each year into a sinking fund that
+consistently earns interest at the annual rate
+of \($r_PER $PERCENT\), compounded yearly.
+How much should the annual desposit be so
+that the parents can afford a \($fva\)
+tuition payment when the child turns \($n\)
+years old?  Assume the first deposit
+will be made on the child's first birthday
+and that deposits will not earn interest
+until after they have been in place a
+full year.
+
+$PAR
+\{ANS_RULE(10)\}
+$PAR
+
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($pmt)->with(tolType => 'absolute', tolerance => .035,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+This is an application of the future value of an annuity formula
+\[
+FVA = PMT \, \frac{(1+i)^n-1}{i},
+\]
+$PAR
+where \(FVA = $fva, \text{ }i = $i, \text{ and } n = $n\).
+Solving for \(PMT\) gives
+\[
+PMT = \frac{FVA \times i}{(1+i)^n-1}.
+\]
+Plugging everything in, we see that
+$PAR
+\[
+PMT = \frac{$fva \times $i}{(1 + $i)^{$n}-1} = $pmt.
+\]
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

@@ -1,0 +1,114 @@
+## DESCRIPTION
+## Find the net price given a series of two trade discounts.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'discount', 'trade discount', 'list price', 'net price')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Percents')
+## DBsection('Discounts')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl",
+  "contextArbitraryString.pl",
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+
+Context("Numeric");
+
+$list_price = Real(random(20, 50, 5));
+$discount_rate1_PER = Real(random(5, 25, 5));
+$discount_rate1 = $discount_rate1_PER / 100;
+$discount_rate2_PER = Real(random(5, 25, 5));
+$discount_rate2 = $discount_rate2_PER / 100;
+$equivalent_rate = 1 - (1 - $discount_rate1)*(1- $discount_rate2);
+$equivalent_rate_PER = 100 * $equivalent_rate;
+$discount_amt = $list_price * $equivalent_rate;
+$net_price = $list_price - $discount_amt;
+
+Context("Currency");
+
+$list_price = Currency($list_price);
+$discount_amt = Currency($discount_amt);
+$net_price = Currency($net_price);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose a supplier lists a case of soda for sale
+at \($list_price\).  A restaurant qualifies for the
+following series of trade
+discounts: \($discount_rate1_PER $PERCENT\) and
+\($discount_rate2_PER $PERCENT\).
+
+$PAR
+a) Calculate the equivalent single discount rate.
+$PAR
+\{ANS_RULE(a1,6)\}\(%\)
+$PAR
+b) Calculate the net price or remittance.
+$PAR
+\{ANS_RULE(b1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$PAR
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($equivalent_rate_PER)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+
+ANS(Compute($net_price)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+a) The equivalent single discount rate is
+\(1-(1 - $discount_rate1) \times (1 - $discount_rate2) = $equivalent_rate = $equivalent_rate_PER $PERCENT\).
+$PAR
+b) The net price is \($list_price - $list_price \times $equivalent_rate
+= $net_price\).
+$PAR
+
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

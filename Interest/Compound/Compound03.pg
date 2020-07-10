@@ -1,0 +1,153 @@
+## DESCRIPTION
+## Find the value of a savings account after one year.
+## Interest is compounded at various intervals.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'interest', 'compound')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Interest')
+## DBsection('Compound')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+Context("Numeric");
+
+$P = random(10000, 90000, 1000);
+$r_PER = random(1, 5, 1);
+$r = $r_PER / 100;
+$t = 1;
+
+$m = 1;
+$FV_yearly = $P*(1 + $r/$m)**($m**$t);
+$m = 2;
+$FV_semiannually = $P*(1 + $r/$m)**($m**$t);
+$m = 4;
+$FV_quarterly = $P*(1 + $r/$m)**($m**$t);
+$m = 365;
+$FV_daily = $P*(1 + $r/$m)**($m**$t);
+
+@names = ("Rebecca", "Megan", "Silia", "Linda", "Gina");
+$name = $names[random(0, $#names, 1)];
+
+Context("Currency");
+
+$P = Currency($P);
+$FV_yearly = Currency($FV_yearly);
+$FV_semiannually = Currency($FV_semiannually);
+$FV_quarterly = Currency($FV_quarterly);
+$FV_daily = Currency($FV_daily);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose that $name has a savings account with an initial
+balance of \($P\).  The account consistently earns interest
+at the annual rate of \($r_PER $PERCENT\).
+Assume $name will not touch the account for one year.
+$PAR
+$HR
+a) If interest is compounded yearly, what will be the value of the account after one year?
+$PAR
+\{ANS_RULE(10)\}
+$PAR
+$HR
+b) If interest is compounded semiannually, what will be the value of the account after one year?
+$PAR
+\{ANS_RULE(10)\}
+$PAR
+$HR
+c) If interest is compounded quarterly, what will be the value of the account after one year?
+$PAR
+\{ANS_RULE(10)\}
+$PAR
+$HR
+d) If interest is compounded daily, what will be the value of the account after one year?  Use a \(365\)-day year.
+$PAR
+\{ANS_RULE(10)\}
+$PAR
+
+(${BBOLD}Note: $EBOLD The answers are dollar amounts and should include a dollar sign.)
+
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($FV_yearly)->with(tolType => 'absolute', tolerance => .025,)->cmp);
+ANS(Compute($FV_semiannually)->with(tolType => 'absolute', tolerance => .025,)->cmp);
+ANS(Compute($FV_quarterly)->with(tolType => 'absolute', tolerance => .025,)->cmp);
+ANS(Compute($FV_daily)->with(tolType => 'absolute', tolerance => .025,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+This is an application of the future value formula
+\[
+FV = P\Big(1+\frac{r}{m}\Big)^{mt},
+\]
+where \(P=$P\), \(r=$r\), and \(t=1\).  The value of
+\(m\) differs in each part.
+$PAR
+a) Here, \(m=1\).  So 
+\[
+FV = $P\Big(1+\frac{$r}{1}\Big)^{1 \times $t} = $FV_yearly.
+\]
+$PAR
+b) Here, \(m=2\).  So 
+\[
+FV = $P\Big(1+\frac{$r}{2}\Big)^{2 \times $t} = $FV_semiannually.
+\]
+$PAR
+c) Here, \(m=4\).  So 
+\[
+FV = $P\Big(1+\frac{$r}{4}\Big)^{4 \times $t} = $FV_quarterly.
+\]
+$PAR
+d) Here, \(m=365\).  So 
+\[
+FV = $P\Big(1+\frac{$r}{365}\Big)^{365 \times $t} = $FV_daily.
+\]
+$PAR
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();
