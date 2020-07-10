@@ -1,0 +1,150 @@
+## DESCRIPTION
+## Calculate dividends distributed to preferred and
+## common shares of stock.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'stock', 'preferred', 'common', 'par value', 'dividend')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Stocks_and_Bonds')
+## DBsection('Stocks')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+Context("Numeric");
+
+$par = random(20, 50, 5);
+$div_PER = random(10, 20, 1);
+$div = $div_PER / 100;
+$pref_shares = Real(random(1000, 4000, 1000));
+$pref_div = $par * $div;
+$pref_pool = $pref_div * $pref_shares;
+
+$earn_PER = random(10, 50, 5);
+$earn = $earn_PER / 100;
+
+$div_pool = $pref_pool + random(10000, 100000);
+$earnings = $div_pool/$earn;
+
+$comm_shares = Real(random(50000, 150000, 1000));
+$comm_pool = $div_pool - $pref_pool;
+$comm_div = $comm_pool / $comm_shares;
+
+Context("Currency");
+
+$par = Currency($par);
+$pref_div = Currency($pref_div);
+$pref_pool = Currency($pref_pool);
+$earnings = Currency($earnings);
+$comm_div = Currency($comm_div);
+$comm_pool = Currency($comm_pool);
+$div_pool = Currency($div_pool);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose the capital stock of the fictional XYZ corporation consists
+of \($pref_shares\) shares of preferred stock and \($comm_shares\)
+shares of common stock.
+Last year, the corporation had earnings of \($earnings\).  Suppose
+the board of directors declared an annual dividend equal to
+\($earn_PER $PERCENT\) of last year's earnings.  A share of 
+preferred stock is guaranteed a dividend equal to \($div_PER $PERCENT\)
+of the par value of the stock, which was set to \($par\) in the
+corporate charter.  After dividends are distributed to
+preferred shareholders, the remaining money allocated for dividends
+is distributed to the common shareholders.
+$PAR
+a) What is the dividend amount per share of preferred stock?
+$PAR
+\{ANS_RULE(a1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$HR
+b) What amount will be distributed, in total, to the preferred
+shareholders?
+$PAR
+\{ANS_RULE(b1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$HR
+c) What amount will be distributed, in total, to the common
+shareholders?
+$PAR
+\{ANS_RULE(c1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+$HR
+d) What is the dividend amount per common share?
+$PAR
+\{ANS_RULE(c1,10)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+
+
+
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($pref_div)->with(tolType => 'absolute', tolerance => .005,)->cmp);
+ANS(Compute($pref_pool)->with(tolType => 'absolute', tolerance =>  1,)->cmp);
+ANS(Compute($comm_pool)->with(tolType => 'absolute', tolerance =>  1,)->cmp);
+ANS(Compute($comm_div)->with(tolType => 'absolute', tolerance => .005,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+a) The dividend issued to a preferred share is \($div \times $par = $pref_div\).
+$HR
+b) In total, \($pref_div \times $pref_shares = $pref_pool\) will
+be distributed to the preferred shareholders.
+$HR
+c) The dividend pool for all shareholders is 
+\($earn \times $earnings = $div_pool\).  The common
+shareholders will receive \($div_pool - $pref_pool = $comm_pool\).
+$HR
+d) Each common share will receive \($comm_pool \div $comm_shares  = $comm_div\).
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

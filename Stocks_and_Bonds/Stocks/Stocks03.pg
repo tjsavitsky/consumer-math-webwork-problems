@@ -1,0 +1,91 @@
+## DESCRIPTION
+## Find the current annual dividend yield of a fictional stock given
+## its price and most recent quarterly dividend.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'stock', 'dividend')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Stocks_and_Bonds')
+## DBsection('Stocks')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+Context("Numeric");
+Context()->{format}{number} = "%.2f";
+
+$dividend = random(0.05, 2.00, 0.05);
+$price = random(30, 50, 0.25);
+$yield = $dividend * 4 / $price;
+$yield_PER = $yield * 100;
+
+Context("Currency");
+$price = Currency($price);
+$dividend = Currency($dividend);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+Context()->{format}{number} = "%.2f";
+BEGIN_TEXT
+Suppose that the fictional XYZ company's stock is currently
+priced at \($price\) and that is most recently quarterly
+dividend was in the amount of \($dividend\) per share.
+Find the current annual dividend yield of the XYZ company.
+$PAR
+\{ANS_RULE(a1,6)\}\(%\)
+$PAR
+
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($yield_PER)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+
+Context()->texStrings;
+Context()->{format}{number} = "%.2f";
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+The current annual dividend yield is \(\frac{$dividend \times 4}{$price}
+= $yield = $yield_PER $PERCENT\).
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

@@ -1,0 +1,117 @@
+## DESCRIPTION
+## Find the current annual dividend yield of a stock given
+## its price and most recent quarterly dividend.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'stock', 'dividend')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Stocks_and_Bonds')
+## DBsection('Stocks')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+Context("Numeric");
+Context()->{format}{number} = "%.2f";
+
+# (stock name, symbol, trading month, trading day, trading year, trading price, quarterly dividend)
+@stocks = (
+    ['American Assets Trust', 'AAT', 3, 13, 2019, 46.12, 2, 19, 2019, 0.28],
+    ['Belden', 'BDC', 3, 13, 2019, 58.18, 2, 13, 2019, 0.05],
+    ['EMC Insurance Group', 'EMCI', 3, 13, 2019, 31.94, 3, 4, 2019, 0.23],
+    ['Franco-Nevada Corporation', 'FNV', 3, 13, 2019, 77.89, 2, 7, 2019, 0.24],
+    ['Golar LNG Limited', 'GLNG', 3, 13, 2019, 21.73, 2, 27, 2019, 0.15],
+    ['Home Depot', 'HD', 3, 13, 2019, 181.14, 2, 26, 2019, 1.36],
+);
+    
+$len = 0;
+foreach $note (@stocks) {
+    $len += 1;
+}
+$index = random(0, $len-1, 1);
+$stock = $stocks[$index][0];
+$ticker = $stocks[$index][1];
+$tmonth = $stocks[$index][2];
+$tday = $stocks[$index][3];
+$tyear = $stocks[$index][4];
+$price = $stocks[$index][5];
+$dmonth = $stocks[$index][6];
+$dday = $stocks[$index][7];
+$dyear = $stocks[$index][8];
+$dividend = $stocks[$index][9];
+
+$yield = $dividend * 4 / $price;
+$yield_PER = $yield * 100;
+
+Context("Currency");
+$price = Currency($price);
+$dividend = Currency($dividend);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+Context()->{format}{number} = "%.2f";
+BEGIN_TEXT
+At the end of trading on \($tmonth/$tday/$tyear\),
+$stock stock (ticker symbol: $ticker) was valued
+at \($price\) on the NASDAQ.  The most recently quarterly dividend
+of \($dividend\) was declared on \($dmonth/$dday/$dyear\).
+Compute the current annual
+dividend yield as of \($tmonth/$tday/$tyear\).
+$PAR
+\{ANS_RULE(a1,6)\}\(%\)
+$PAR
+
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($yield_PER)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+
+Context()->texStrings;
+Context()->{format}{number} = "%.2f";
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+The current annual dividend yield is \(\frac{$dividend \times 4}{$price}
+= $yield = $yield_PER $PERCENT\).
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

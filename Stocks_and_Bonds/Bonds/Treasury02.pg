@@ -1,0 +1,123 @@
+## DESCRIPTION
+## Find the sales price of a treasury bill given its discount rate
+## and duration.  The duration of the T-bill is less than 52 weeks.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'treasury', 'bill', 'discount')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Stocks_and_Bonds')
+## DBsection('Bonds')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+Context("Numeric");
+Context()->{format}{number} = "%.8g";
+
+# (month, day, year, duration in weeks, duration in days, discount rate, price, cusip)
+@tbills = (
+    [1,  31, 2019, 26, 182, 2.450, 98.761389, '912796SB6'],
+    [1,  17, 2019, 26, 182, 2.460, 98.756333, '912796QR3'],
+    [1,  31, 2019, 13, 91,  2.375, 99.399653, '912796RJ0'],
+    [1,  24, 2019, 13, 91,  2.390, 99.395861, '912796QC6'],
+    [1,  17, 2019, 13, 91,  2.405, 99.392069, '912796RH4'],
+    [1,  10, 2019, 13, 91,  2.410, 99.390806, '912796RG6'],
+    [1,  29, 2019, 8,  56,  2.370, 99.631333, '912796UU1'],
+    [1,  22, 2019, 8,  56,  2.365, 99.632111, '912796UT4'],
+    [1,  15, 2019, 8,  56,  2.390, 99.628222, '912796US6'],
+    [1,  8,  2019, 8,  56,  2.375, 99.630556, '912796UR8'],
+    [1,  29, 2019, 4,  28,  2.355, 99.816833, '912796UQ0'],
+    [1,  22, 2019, 4,  28,  2.370, 99.815667, '912796UP2'],
+    [1,  15, 2019, 4,  28,  2.380, 99.814889, '912796UN7'],
+    [1,  8,  2019, 4,  28,  2.390, 99.814111, '912796UM9'],   
+);
+    
+$len = 0;
+foreach $bill (@tbills) {
+    $len += 1;
+}
+$index = random(0, $len-1, 1);
+$month = $tbills[$index][0];
+$day = $tbills[$index][1];
+$year = $tbills[$index][2];
+$weeks = $tbills[$index][3];
+$days = $tbills[$index][4];
+$discount_rate_PER = $tbills[$index][5];
+$price = $tbills[$index][6];
+$cusip = $tbills[$index][7];
+
+$dollar = '\$';
+$days_in_year = 360;
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+Context()->{format}{number} = "%.8g";
+BEGIN_TEXT
+On \(${month}/${day}/${year}\), the U.S. Treasury issued
+\($weeks\)-week Treasury bills with a face value of \(${dollar}100\)
+at a \($discount_rate_PER $PERCENT\) discount rate.
+The duration of such bills is \($days\) days.
+(See CUSIP $cusip.)
+$PAR
+Calculate the sales price of such a T-bill.  Note that
+the U.S. Treasury uses a \($days_in_year\)-day year
+for discount rate calculations.
+$PAR
+\($dollar\)\{ANS_RULE(10)\}
+$PAR
+
+You must give the answer to six decimal places.  For this problem, you should 
+$BITALIC not $EITALIC put a dollar sign before the answer.
+
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($price)->with(tolType => 'absolute', tolerance => .000001,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+Such a Treasury bill sold for \(${dollar}100 - ${dollar}100\times \frac{$days}{$days_in_year}\times \frac{$discount_rate_PER}{100}= ${dollar}$price\).
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

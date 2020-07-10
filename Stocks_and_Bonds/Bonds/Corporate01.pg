@@ -1,0 +1,140 @@
+## DESCRIPTION
+## Estimate the yield-to-maturity of a fictional corporate bond.
+## The bond sells at a discount.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'bond', 'yield')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Stocks_and_Bonds')
+## DBsection('Bonds')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+Context("Numeric");
+
+$face = 100;
+$price = random(80, 99.9, .1);
+$rate_PER = random(2, 8, 0.125);
+$rate = $rate_PER / 100;
+$maturity = random(3, 10, 1);
+
+$payment = $face * $rate / 2;
+
+$annual_interest = $face * $rate;
+$amortization = ($face - $price)/$maturity;
+$average_principal = ($face + $price)/2;
+
+$yield = ($face * $rate + ($face-$price)/$maturity)/(($face+$price)/2);
+$yield_PER = $yield * 100;
+
+Context("Currency");
+$face = Currency($face);
+$price = Currency($price);
+$annual_interest = Currency($annual_interest);
+$amortization = Currency($amortization);
+$average_principal = Currency($average_principal);
+$payment = Currency($payment);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose bonds were issued by the fictional XYZ Corporation 
+with a \($rate_PER $PERCENT\) annual interest rate
+at a face value of \($face\).  Interest payments
+are made semiannually.
+
+$PAR
+a) Find the semiannual interest payment, also known as the coupon payment.
+$PAR
+\{ANS_RULE(a1,6)\}
+$PAR
+
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+
+
+$HR
+
+b) One such bond
+was purchased at the discounted price of \($price\)
+when it was \($maturity\) years away from maturity.
+
+Estimate its yield-to-maturity using the formula
+\[\text{Yield-to-maturity} \approx \;
+\frac{\text{Annual interest} + \text{Annual discount amortization}}
+{\text{Average principal invested}}\]
+
+$PAR
+\{ANS_RULE(b1,6)\}\(%\)
+$PAR
+
+(${BBOLD}Note: $EBOLD This estimation technique is probably not
+as accurate the YIELD function in Microsoft Excel.)
+
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($payment)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+ANS(Compute($yield_PER)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+a) The semiannual interest payment is \[\frac{$face \times $rate}{2}
+= $payment.\]
+$PAR
+b) The annual interest is \($face \times $rate = $annual_interest\).
+$PAR
+The annual discount amortization is \[\frac{$face - $price}{$maturity}
+= $amortization.\]
+$PAR
+The average principal invested is \[\frac{$face + $price}{2} = 
+$average_principal.\]
+$PAR
+The formula estimates the yield-to-maturity as 
+\[\frac{$annual_interest + $amortization}{$average_principal}
+= $yield = $yield_PER $PERCENT.\]
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

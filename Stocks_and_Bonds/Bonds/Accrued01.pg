@@ -1,0 +1,106 @@
+## DESCRIPTION
+## Compute accrued interest on a bond.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'bond', 'coupon', 'accrued interest')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Stocks_and_Bonds')
+## DBsection('Bonds')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+Context("Numeric");
+
+$face = random(1000, 20000, 1000);
+$rate_PER = random(2, 8, 0.125);
+$rate = $rate_PER / 100;
+$duration = random(3, 10, 1);
+$coupon_days = random(182, 183, 1);
+$days_since = random(10, 180, 1);
+$accrued = $face * $rate / 2 * $days_since / $coupon_days;
+$payment = $face * $rate / 2;
+
+
+Context("Currency");
+$face = Currency($face);
+$accrued = Currency($accrued);
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+BEGIN_TEXT
+
+Suppose a \($duration\)-year bond with a face value of
+\($face\) and a coupon rate of \($rate_PER $PERCENT\) is
+purchased by a third-party \($days_since\) days after the
+last coupon payment. Suppose furthermore that the current
+coupon period contains \($coupon_days\) days.
+Calculate the interest that has accrued since the
+last coupon payment.
+$PAR
+Use the formula \[
+I = P \times \frac{r}{2} \times \frac{d}{c},
+\]
+where \(I\) is the accrued interest, \(P\) is the
+face value of the bond, \(r\) is the coupon rate,
+\(d\) is the number of days since the last coupon
+payment, and \(c\) is the number of days in
+the current coupon period.
+$PAR
+\{ANS_RULE(a1,6)\}
+$PAR
+(${BBOLD}Note: $EBOLD The answer is a dollar amount and should include a dollar sign.)
+
+
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($accrued)->with(tolType => 'absolute', tolerance => .015,)->cmp);
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+The accrued interest is \($face \times \frac{$rate}{2} \times
+\frac{$days_since}{$coupon_days} = $accrued\).
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();

@@ -1,0 +1,125 @@
+## DESCRIPTION
+## Find the yield of a 3-year treasury note given its sales price,
+## interest rate, and duration.
+## ENDDESCRIPTION
+
+##KEYWORDS('consumer mathematics', 'financial mathematics', 'bond', 'treasury')
+
+## DBsubject('Consumer Mathematics')
+## DBchapter('Stocks_and_Bonds')
+## DBsection('Bonds')
+## Date('Spring 2019')
+## Author1('Thomas Savitsky')
+
+########################################################################
+
+DOCUMENT();
+
+loadMacros(
+  "PGstandard.pl",
+  "MathObjects.pl",
+  "contextCurrency.pl",
+  "PGcourse.pl"
+);
+
+# Print problem number and point value (weight) for the problem
+# TEXT(beginproblem());
+
+# Show which answers are correct and which ones are incorrect
+$showPartialCorrectAnswers = 1;
+
+
+##############################################################
+#
+#  Setup
+#
+#
+Context("Numeric");
+Context()->{format}{number} = "%.8g";
+
+# (issue month, issue day, issue year, duration in years, maturity month,
+#  maturity day, maturity year, interest rate as percentage, sales price,
+#  yield as percentage, cusip)
+@tnotes = (
+    [12, 17, 2018, 3, 12, 15, 2021, 2.625, 99.648536, 2.748, '9128285R7'],
+    [11, 15, 2018, 3, 11, 15, 2021, 2.875, 99.692263, 2.983, '9128285L0'],
+    [10, 15, 2018, 3, 10, 15, 2021, 2.875, 99.675199, 2.989, '9128285F3'],
+    [9,  17, 2018, 3, 9,  15, 2021, 2.750, 99.797279, 2.821, '9128285A4'],
+    [8,  15, 2018, 3, 8,  15, 2021, 2.750, 99.957100, 2.765, '9128284W7'],
+    [7,  16, 2018, 3, 7,  15, 2021, 2.625, 99.828219, 2.685, '912828Y20'],
+    [6,  15, 2018, 3, 6,  15, 2021, 2.625, 99.888266, 2.664, '9128284T4'],
+    [5,  15, 2018, 3, 5,  15, 2021, 2.625, 99.888266, 2.664, '9128284P2'],
+    [4,  16, 2018, 3, 4,  15, 2021, 2.375, 99.784450, 2.450, '9128284G2'],
+    [3,  16, 2018, 3, 3,  15, 2021, 2.375, 99.824555, 2.436, '9128284B3'],
+    [2,  15, 2018, 3, 2,  15, 2021, 2.250, 99.913485, 2.280, '9128283X6'],
+    [1,  16, 2018, 3, 1,  15, 2021, 2.000, 99.768648, 2.080, '9128283Q1'],
+);
+    
+$len = 0;
+foreach $note (@tnotes) {
+    $len += 1;
+}
+$index = random(0, $len-1, 1);
+$imonth = $tnotes[$index][0];
+$iday = $tnotes[$index][1];
+$iyear = $tnotes[$index][2];
+$years = $tnotes[$index][3];
+$mmonth = $tnotes[$index][4];
+$mday = $tnotes[$index][5];
+$myear = $tnotes[$index][6];
+$interest_rate_PER = $tnotes[$index][7];
+$sales = $tnotes[$index][8];
+$yield_PER = $tnotes[$index][9];
+$cusip = $tnotes[$index][10];
+
+$dollar = '\$';
+$days_in_year = 360;
+
+##############################################################
+#
+#  Text
+#
+#
+
+Context()->texStrings;
+Context()->{format}{number} = "%.8g";
+BEGIN_TEXT
+On \(${imonth}/${iday}/${iyear}\), the U.S. Treasury sold
+\($years\)-year Treasury notes with an annual interest
+rate of \($interest_rate_PER $PERCENT\) 
+and a face value of \(${dollar}100\)
+for \(${dollar}$sales\).  The maturity date of such notes is
+\(${mmonth}/${mday}/${myear}\).
+$PAR
+Use the YIELD function in Microsoft Excel or elsewhere
+to calculate the yield of such a Treasury note.
+Recall that interest payments on treasury notes are made semiannually.
+$PAR
+\{ANS_RULE(a1,6)\}\(%\)
+$PAR
+Give the answer to three decimal points.
+
+END_TEXT
+Context()->normalStrings;
+
+
+##############################################################
+#
+#  Answers
+#
+#
+
+ANS(Compute($yield_PER)->with(tolType => 'absolute', tolerance => .0015,)->cmp);
+
+Context()->texStrings;
+BEGIN_SOLUTION
+$PAR
+-------------------------------
+$BR   $BBOLD Solution: $EBOLD
+$PAR
+The yield of such a Treasury note is \($yield_PER $PERCENT\).
+END_SOLUTION
+Context()->normalStrings;
+
+COMMENT('MathObject version', 'Solutions Included');
+ENDDOCUMENT();
